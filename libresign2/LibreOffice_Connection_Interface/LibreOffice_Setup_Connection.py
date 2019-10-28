@@ -83,23 +83,3 @@ class LibreOffice_Setup_Connection():
         model = self.desktop.getCurrentComponent()
         logging.debug(['get Current object, desktop, libreoffice', model])
         model.Presentation.end()
-
-
-# logging.root.setLevel(10)
-
-# lo_setup_conn = LibreOffice_Setup_Connection()
-# lo_setup_conn.start_LibreOffice()
-# lo_setup_conn.setup_LibreOffice_connection()
-#
-# lo_setup_conn.open_document_LibreOffice('/home/linus/PycharmProjects/libresign2/libresign2/presentations/pre_file/Andras_Timar_LibOConf2011.odp')
-#
-# lo_setup_conn.start_presentation()
-#
-# time.sleep(6)
-# lo_setup_conn.lo_slideshow_contr.go_to_next_Slide()
-# time.sleep(2)
-# lo_setup_conn.end_curent_presentation()
-# time.sleep(2)
-# lo_setup_conn.close_document_LibreOffice()
-# # TODO somehow kill the proc
-# # LO_S_C.subprocess_libreoffice_pid.kill()
