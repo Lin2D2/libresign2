@@ -1,6 +1,9 @@
+
 import time, logging, os, sys, multiprocessing, subprocess
 import json
 import libresign2.infoscreen.infoscreen as infoscreen
+
+from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
 
 
 class LibresignInstance():
@@ -9,6 +12,7 @@ class LibresignInstance():
         self.home_dir = self.read_settings("HomeDir")
         self.infoscreen_process = None
         self.network_addresse = None
+        self.lo_setup_conn = LibreOffice_Setup_Connection(parent=self)
 
     def read_settings(self, parameter):
         with open(self.settings_path, "r") as json_file:
@@ -82,6 +86,24 @@ class LibresignInstance():
         os.chdir(cwd)
 
         # TODO start LibreOffice Instance
+
+        self.lo_setup_conn.start_LibreOffice()
+        self.lo_setup_conn.setup_LibreOffice_connection()
+
+        self.lo_setup_conn.open_document_LibreOffice(
+            '/home/linus/PycharmProjects/libresign2/libresign2/presentations/pre_file/Andras_Timar_LibOConf2011.odp')
+
+        self.infoscreen_process.kill()
+        self.lo_setup_conn.start_presentation()
+
+        time.sleep(6)
+        self.lo_setup_conn.lo_slideshow_contr.go_to_next_Slide()
+        time.sleep(2)
+        self.lo_setup_conn.end_curent_presentation()
+        time.sleep(2)
+        self.lo_setup_conn.close_document_LibreOffice()
+        # TODO somehow kill the proc
+        # LO_S_C.subprocess_libreoffice_pid.kill()
 
         # TODO add an option to quit to Program
 
