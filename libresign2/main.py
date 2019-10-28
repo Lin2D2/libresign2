@@ -79,12 +79,12 @@ class LibresignInstance():
 
         # TODO start Control sever
 
-        cwd = os.getcwd()
-        os.chdir(self.home_dir + '/web_control_panel')
-        args = ['python3', '-m', 'http.server', self.read_settings("HTTP_PORT")]
-        subprocess.Popen(args)
-
-        os.chdir(cwd)
+        # cwd = os.getcwd()
+        # os.chdir(self.home_dir + '/web_control_panel')
+        # args = ['python3', '-m', 'http.server', self.read_settings("HTTP_PORT")]
+        # subprocess.Popen(args)
+        #
+        # os.chdir(cwd)
 
         # TODO start LibreOffice Instance
 
