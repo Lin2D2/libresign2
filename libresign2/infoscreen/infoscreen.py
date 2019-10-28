@@ -103,7 +103,7 @@ def start_info_screen(url):
     h = root.winfo_screenheight()
     root.geometry("%dx%d+0+0" % (w, h))
     root.attributes('-fullscreen', True)
-    # root.attributes('-topmost', True)
+    root.attributes('-topmost', True)
 
     app = InfoScreen(master=root, url=url)
     app.configure(background=bg_color)
