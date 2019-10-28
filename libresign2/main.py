@@ -8,7 +8,8 @@ from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection im
 
 class LibresignInstance():
     def __init__(self):
-        self.settings_path = "settings.json"
+        self.cwd = os.getcwd()
+        self.settings_path = self.cwd + "/settings.json"
         self.home_dir = self.read_settings("HomeDir")
         self.infoscreen_process = None
         self.network_addresse = None
@@ -90,8 +91,7 @@ class LibresignInstance():
         self.lo_setup_conn.start_LibreOffice()
         self.lo_setup_conn.setup_LibreOffice_connection()
 
-        self.lo_setup_conn.open_document_LibreOffice(
-            '/home/linus/PycharmProjects/libresign2/libresign2/presentations/pre_file/Andras_Timar_LibOConf2011.odp')
+        self.lo_setup_conn.open_document_LibreOffice(self.cwd + '/presentations/pre_file/Andras_Timar_LibOConf2011.odp')
 
         self.infoscreen_process.kill()
         self.lo_setup_conn.start_presentation()

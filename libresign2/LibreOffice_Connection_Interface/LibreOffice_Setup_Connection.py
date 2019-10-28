@@ -13,6 +13,7 @@ from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls
 class LibreOffice_Setup_Connection():
     def __init__(self, parent=None):
         self.parent = parent
+        self.p_cwd = self.parent.cwd
         self.subprocess_libreoffice_pid = None
         self.desktop = None
         self.docu = None
