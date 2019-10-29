@@ -18,8 +18,9 @@
 import os
 from flask import Flask, request, render_template, redirect, send_file
 
-import libresign.config as config
-from libresign.request import Request
+# TODO change to right settings
+import libresign2.web_control_panel.config as config
+from libresign2.web_control_panel.request import Request
 
 app = Flask(__name__)
 web = None
@@ -118,7 +119,7 @@ def remove():
     file_request(Request.REMOVE_FILE)
     return redirect('/')
 
-@app.route('/play_file', methods=['POST'])
+@app.route('/play_file', methods=['POST'])# TODO change to right settings
 def play_file():
     file_request(Request.PLAY_FILE)
     return redirect('/')

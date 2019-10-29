@@ -22,9 +22,10 @@
 
 import threading, logging, socket, subprocess, string
 
-import libresign.request as requests
-import libresign.flaskapp as flaskapp
-import libresign.config as config
+import libresign2.web_control_panel.request as requests
+import libresign2.web_control_panel.flaskapp as flaskapp
+# TODO change to right settings
+import libresign2.web_control_panel.config as config
 
 # TODO wrap this up into a class
 
