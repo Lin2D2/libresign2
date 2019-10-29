@@ -22,6 +22,7 @@ from com.sun.star.beans import PropertyValue
 from com.sun.star.beans.PropertyState import DIRECT_VALUE
 
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
+import irpjs.irp as irpjs
 
 
 class LibreOffice_Setup_Connection():
@@ -32,6 +33,9 @@ class LibreOffice_Setup_Connection():
         self.desktop = None
         self.docu = None
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
+
+    def start_remote_sever(self):
+        irpjs.run_irp_server(self, address=self.parent.ip_addr)
 
     def start_LibreOffice(self):
         logging.info(['starting LibreOffice'])
@@ -70,6 +74,8 @@ class LibreOffice_Setup_Connection():
         self.docu.close(False)
 
     def start_presentation(self):
+        self.parent.infoscreen_process.kill()
+
         self.docu.Presentation.IsAlwaysOnTop = True
         self.docu.Presentation.IsEndless = False
         self.docu.Presentation.IsFullScreen = True

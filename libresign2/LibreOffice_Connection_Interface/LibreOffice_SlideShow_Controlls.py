@@ -28,3 +28,11 @@ class LibreOffice_SlideShow_Controlls():
 
     def go_to_previous_Slide(self):
         self.parent.docu.Presentation.Controller.gotoPreviousSlide()
+
+    # TODO add this function goto_slide(number)
+    def goto_slide(self, number):
+        pass
+
+    # TODO add this function presentation_resume
+    def resume_presentation(self):
+        pass
