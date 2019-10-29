@@ -23,6 +23,9 @@ class LibreOffice_SlideShow_Controlls():
     def __init__(self, parent=None):
         self.parent = parent
 
+    def send_slide_info (self):
+        pass
+
     def go_to_next_Slide(self):
         self.parent.docu.Presentation.Controller.gotoNextSlide()
 

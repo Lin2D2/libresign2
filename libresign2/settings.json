@@ -1,1 +1,1 @@
-{"HTTP_PORT": 5000, "REMOTE_PORT": 5200, "HTTP_CABLE_ONLY": "True", "SAVE_FOLDER": "./presentations", "PLAYLIST": "./playlist", "SHOW_INFO_SCREEN": "True", "CONFERENCE": "True", "HomeDir": "/home/linus/PycharmProjects/libresign2/libresign2", "LOGGING_LEVEL": 20}
+{"HTTP_PORT": 5000, "REMOTE_PORT": 5200, "HTTP_CABLE_ONLY": "True", "SAVE_FOLDER": "./presentations", "PLAYLIST": "./playlist", "SHOW_INFO_SCREEN": "True", "CONFERENCE": "True", "HomeDir": "/home/linus/PycharmProjects/libresign2/libresign2", "LOGGING_LEVEL": 10}

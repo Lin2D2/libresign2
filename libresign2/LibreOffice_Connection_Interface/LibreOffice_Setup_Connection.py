@@ -35,7 +35,7 @@ class LibreOffice_Setup_Connection():
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
 
     def start_remote_sever(self):
-        irpjs.run_irp_server(self, address=self.parent.ip_addr)
+        irpjs.run_irp_server(self)
 
     def start_LibreOffice(self):
         logging.info(['starting LibreOffice'])
@@ -74,14 +74,19 @@ class LibreOffice_Setup_Connection():
         self.docu.close(False)
 
     def start_presentation(self):
+        logging.debug(['beginning to start presentation'])
+        try:
+            logging.debug(['beginning to start presentation', self.docu, self.docu.Presentation])
+        except:
+            logging.warning("failed logging self.docu and/or self.docu.Presentation")
         self.parent.infoscreen_process.kill()
 
-        self.docu.Presentation.IsAlwaysOnTop = True
-        self.docu.Presentation.IsEndless = False
-        self.docu.Presentation.IsFullScreen = True
-        self.docu.Presentation.IsMouseVisible = False
-        self.docu.Presentation.IsTransitionOnClick = False
-        self.docu.Presentation.Pause = 1
+        # self.docu.Presentation.IsAlwaysOnTop = True
+        # self.docu.Presentation.IsEndless = False
+        # self.docu.Presentation.IsFullScreen = True
+        # self.docu.Presentation.IsMouseVisible = False
+        # self.docu.Presentation.IsTransitionOnClick = False
+        # self.docu.Presentation.Pause = 1
         self.docu.Presentation.start()
         logging.info('presentation started')
 
