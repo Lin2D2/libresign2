@@ -27,7 +27,9 @@ class LibresignInstance():
         self.settings_path = self.cwd + "/settings.json"
         self.home_dir = self.read_settings("HomeDir")
         self.infoscreen_process = None
+        logging.info(['getting ip addresse'])
         self.ip_addr = socket.gethostbyname(socket.gethostname())
+        logging.info(['ip addresse:', self.ip_addr])
         self.lo_setup_conn = LibreOffice_Setup_Connection(parent=self)
 
     def read_settings(self, parameter):
@@ -107,7 +109,7 @@ class LibresignInstance():
         except:
             logging.warning(["remote_sever not started"])
 
-        # TODO start Control sever
+        # TODO start remote http sever
         cwd = os.getcwd()
         os.chdir('/home/linus/PycharmProjects/libresign2' + '/impress-remote-js')
         args = ['python3', '-m', 'http.server', str(self.read_settings("REMOTE_PORT"))]
