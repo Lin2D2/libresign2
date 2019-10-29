@@ -13,7 +13,7 @@
 # License.
 #
 
-import time, logging, os, sys, multiprocessing, subprocess
+import time, logging, os, sys, multiprocessing, subprocess , threading
 import json
 import libresign2.infoscreen.infoscreen as infoscreen
 import socket
@@ -27,6 +27,7 @@ class LibresignInstance():
         self.settings_path = self.cwd + "/settings.json"
         self.home_dir = self.read_settings("HomeDir")
         self.infoscreen_process = None
+        self.remote_sever = None
         logging.info(['getting ip addresse'])
         self.ip_addr = socket.gethostbyname(socket.gethostname())
         logging.info(['ip addresse:', self.ip_addr])
@@ -102,9 +103,9 @@ class LibresignInstance():
         self.lo_setup_conn.open_document_LibreOffice(self.cwd + '/presentations/pre_file/Andras_Timar_LibOConf2011.odp')
 
         # TODO start remote sever
-        self.remote_sever = multiprocessing.Process(target=self.lo_setup_conn.start_remote_sever, args=())
+        self.remote_sever_proc = threading.Thread(target=self.lo_setup_conn.start_remote_sever, args=())
         try:
-            self.remote_sever.start()
+            self.remote_sever_proc.start()
             logging.info(["remote_sever started"])
         except:
             logging.warning(["remote_sever not started"])
