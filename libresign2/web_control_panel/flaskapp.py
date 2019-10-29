@@ -17,18 +17,41 @@
 #
 import os
 from flask import Flask, request, render_template, redirect, send_file
+import json, sys
+import logging
 
 # TODO change to right settings
-import libresign2.web_control_panel.config as config
 from libresign2.web_control_panel.request import Request
 
 app = Flask(__name__)
 web = None
+cwd = os.getcwd()
+settings_path = cwd + "/settings.json"
+
+
+def read_settings(parameter):
+    with open(settings_path, "r") as json_file:
+        data = json.load(json_file)
+        try:
+            # add that you can do more then just reading one parameter at a time
+            if type(parameter) == list:
+                result = []
+                for p in parameter:
+                    result.append(data[p])
+                return result
+            elif type(parameter) == str:
+                return data[parameter]
+            else:
+                logging.warning(['read_settings, return None', [parameter, type(parameter)]])
+                return None
+        except:
+            logging.exception(["Unexpected error at reading settings:", sys.exc_info()[0], parameter])
+
 
 def run (web_):
     global web
     web = web_
-    app.run(debug=True, use_reloader=False, threaded=True, port=config.HTTP_PORT, host="0.0.0.0")
+    app.run(debug=True, use_reloader=False, threaded=True, port=read_settings("HTTP_PORT"), host="0.0.0.0")
 
 # in case we want to add some more bells and whistles
 def file_request (request_type):
@@ -53,7 +76,7 @@ def upload_file (file):
         print("no filename")
         return
 
-    file.save(os.path.join(config.SAVE_FOLDER, name))
+    file.save(os.path.join(read_settings("SAVE_FOLDER"), name))
 
     file_request(Request.ADD_FILE)
     print ("uploaded", name)
@@ -92,7 +115,7 @@ def index():
     playlist    = web.get_playlist()
     files       = web.get_all_files()
     playing     = web.get_current_playlist_item()
-    hostname    = web.get_address() + ':' + str(config.REMOTE_PORT)
+    hostname    = web.get_address() + ':' + str(read_settings("REMOTE_PORT"))
     print(hostname)
     return render_template('index.html',
                            playlist=playlist,
@@ -112,7 +135,7 @@ def upload():
 
 @app.route('/download/<filename>', methods=['GET'])
 def download(filename):
-    return send_file(os.path.join(config.SAVE_FOLDER, filename))
+    return send_file(os.path.join(read_settings("SAVE_FOLDER"), filename))
 
 @app.route('/remove_file', methods=['POST'])
 def remove():

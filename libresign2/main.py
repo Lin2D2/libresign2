@@ -14,11 +14,14 @@
 #
 
 import time, logging, os, sys, multiprocessing, subprocess , threading
-import json
-import libresign2.infoscreen.infoscreen as infoscreen
+import json, queue, signal
 import socket
 
+from libresign2.presentations.playlist import Playlist
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
+import libresign2.infoscreen.infoscreen as infoscreen
+import libresign2.web_control_panel.web as web
+
 
 
 class LibresignInstance():
@@ -28,9 +31,8 @@ class LibresignInstance():
         self.home_dir = self.read_settings("HomeDir")
         self.infoscreen_process = None
         self.remote_sever = None
-        logging.info(['getting ip addresse'])
+        self.playlist = Playlist()
         self.ip_addr = socket.gethostbyname(socket.gethostname())
-        logging.info(['ip addresse:', self.ip_addr])
         self.lo_setup_conn = LibreOffice_Setup_Connection(parent=self)
 
     def read_settings(self, parameter):
@@ -82,11 +84,16 @@ class LibresignInstance():
             logging.warning(["no network connection"])
             time.sleep(2)
 
+    def get_playlist (self):
+        return self.playlist
+
     def run(self):
         if not self.network_connection():
             self.retry_network_connection()
 
-        # TODO for now set to some url
+        logging.info(['ip addresse:', self.ip_addr])
+
+        # start info screen
         url = "http://" + self.ip_addr + ":5000"
         self.infoscreen_process = multiprocessing.Process(target=infoscreen.start_info_screen, args=(url,))
         try:
@@ -95,12 +102,15 @@ class LibresignInstance():
         except:
             logging.warning(["Infoscreen not started"])
 
+        # start control panel
+        web.start(self, queue.Queue())
+
 
         # TODO start LibreOffice Instance
         self.lo_setup_conn.start_LibreOffice()
         self.lo_setup_conn.setup_LibreOffice_connection()
 
-        self.lo_setup_conn.open_document_LibreOffice(self.cwd + '/presentations/pre_file/Andras_Timar_LibOConf2011.odp')
+        # self.lo_setup_conn.open_document_LibreOffice(self.cwd + self.read_settings("SAVE_FOLDER") + '/Andras_Timar_LibOConf2011.odp')
 
         # TODO start remote sever
         self.remote_sever_proc = threading.Thread(target=self.lo_setup_conn.start_remote_sever, args=())

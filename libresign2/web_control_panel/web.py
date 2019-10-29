@@ -20,20 +20,41 @@
 # apparently compatible with most/all web servers
 #
 
-import threading, logging, socket, subprocess, string
+import threading, logging, subprocess, os, json, sys
 
-import libresign2.web_control_panel.request as requests
+import libresign2.web_control_panel.request as request
 import libresign2.web_control_panel.flaskapp as flaskapp
-# TODO change to right settings
-import libresign2.web_control_panel.config as config
+
+
+cwd = os.getcwd()
+settings_path = cwd + "/settings.json"
+
+def read_settings(parameter):
+    with open(settings_path, "r") as json_file:
+        data = json.load(json_file)
+        try:
+            # add that you can do more then just reading one parameter at a time
+            if type(parameter) == list:
+                result = []
+                for p in parameter:
+                    result.append(data[p])
+                return result
+            elif type(parameter) == str:
+                return data[parameter]
+            else:
+                logging.warning(['read_settings, return None', [parameter, type(parameter)]])
+                return None
+        except:
+            logging.exception(["Unexpected error at reading settings:", sys.exc_info()[0], parameter])
 
 # TODO wrap this up into a class
 
-msg_queue   = None
-running     = None
-thread      = None
-files       = []
-signd       = None
+msg_queue = None
+running = None
+thread = None
+files = []
+signd = None
+
 
 def start(signd_, msgs):
     global msg_queue, running, thread, signd
@@ -47,9 +68,11 @@ def start(signd_, msgs):
         thread.setDaemon(True)
         thread.start()
 
+
 def stop():
     # TODO use other server than werkzeug and deal with shutdown at that point
     pass
+
 
 class WebPusher():
     def push_request (self, request):
@@ -61,17 +84,18 @@ class WebPusher():
     def get_playlist (self):
         playlist = signd.get_playlist()
         return playlist.playlist
-    
+
     def get_all_files (self):
         playlist = signd.get_playlist()
         return playlist.all_files
-    
+
     def get_current_playlist_item (self):
         playlist = signd.get_playlist()
         return playlist.get_current()
 
-    def get_address (self):
+    def get_address(self):
         return get_address()
+
 
 def web_thread():
     web = WebPusher()
@@ -79,14 +103,15 @@ def web_thread():
     flaskapp.run(web)
     logging.info("stopping web server")
 
-def get_addr_1 ():
+
+def get_addr_1():
     # NOTE linux only -- best i could do
     p = subprocess.Popen(['hostname', '-I'], stdout=subprocess.PIPE)
     # TODO might be errors?
     addr, err = p.communicate()
     p.wait()
 
-    logging.debug("web.py::get_addr_1(): hostname -I output: "+str(addr))
+    logging.debug("web.py::get_addr_1(): hostname -I output: " + str(addr))
 
     # output of hostname something like "b'123.0.0.123 x.x.x.x y.y.y.y\n"
     addr = str(addr).split(' ')[0]
@@ -96,8 +121,9 @@ def get_addr_1 ():
 
     return addr
 
+
 # this works on Arch Linux ARM
-def get_addr_pi ():
+def get_addr_pi():
     # NOTE linux only -- best i could do
     p = subprocess.Popen(['ifconfig'], stdout=subprocess.PIPE)
     result, err = p.communicate()
@@ -123,8 +149,9 @@ def get_addr_pi ():
 
     return addr
 
-def get_address ():
-    port = config.HTTP_PORT
+
+def get_address():
+    port = read_settings("HTTP_PORT")
     addr = get_addr_1()
 
     if len(addr) == 0:
