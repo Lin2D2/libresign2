@@ -13,9 +13,10 @@
 # License.
 #
 
-import time, logging, os, sys, multiprocessing, subprocess
+import time, logging, os, sys, multiprocessing, subprocess , threading
 import json
 import libresign2.infoscreen.infoscreen as infoscreen
+import socket
 
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
 
@@ -26,7 +27,10 @@ class LibresignInstance():
         self.settings_path = self.cwd + "/settings.json"
         self.home_dir = self.read_settings("HomeDir")
         self.infoscreen_process = None
-        self.network_addresse = None
+        self.remote_sever = None
+        logging.info(['getting ip addresse'])
+        self.ip_addr = socket.gethostbyname(socket.gethostname())
+        logging.info(['ip addresse:', self.ip_addr])
         self.lo_setup_conn = LibreOffice_Setup_Connection(parent=self)
 
     def read_settings(self, parameter):
@@ -83,7 +87,7 @@ class LibresignInstance():
             self.retry_network_connection()
 
         # TODO for now set to some url
-        url = "http://google.com"
+        url = "http://" + self.ip_addr + ":5000"
         self.infoscreen_process = multiprocessing.Process(target=infoscreen.start_info_screen, args=(url,))
         try:
             self.infoscreen_process.start()
@@ -91,33 +95,28 @@ class LibresignInstance():
         except:
             logging.warning(["Infoscreen not started"])
 
-        # TODO start Control sever
-
-        # cwd = os.getcwd()
-        # os.chdir(self.home_dir + '/web_control_panel')
-        # args = ['python3', '-m', 'http.server', self.read_settings("HTTP_PORT")]
-        # subprocess.Popen(args)
-        #
-        # os.chdir(cwd)
 
         # TODO start LibreOffice Instance
-
         self.lo_setup_conn.start_LibreOffice()
         self.lo_setup_conn.setup_LibreOffice_connection()
 
         self.lo_setup_conn.open_document_LibreOffice(self.cwd + '/presentations/pre_file/Andras_Timar_LibOConf2011.odp')
 
-        self.infoscreen_process.kill()
-        self.lo_setup_conn.start_presentation()
+        # TODO start remote sever
+        self.remote_sever_proc = threading.Thread(target=self.lo_setup_conn.start_remote_sever, args=())
+        try:
+            self.remote_sever_proc.start()
+            logging.info(["remote_sever started"])
+        except:
+            logging.warning(["remote_sever not started"])
 
-        time.sleep(6)
-        self.lo_setup_conn.lo_slideshow_contr.go_to_next_Slide()
-        time.sleep(2)
-        self.lo_setup_conn.end_curent_presentation()
-        time.sleep(2)
-        self.lo_setup_conn.close_document_LibreOffice()
-        # TODO somehow kill the proc
-        # LO_S_C.subprocess_libreoffice_pid.kill()
+        # TODO start remote http sever
+        cwd = os.getcwd()
+        os.chdir('/home/linus/PycharmProjects/libresign2' + '/impress-remote-js')
+        args = ['python3', '-m', 'http.server', str(self.read_settings("REMOTE_PORT"))]
+        subprocess.Popen(args)
+
+        os.chdir(cwd)
 
         # TODO add an option to quit to Program
 

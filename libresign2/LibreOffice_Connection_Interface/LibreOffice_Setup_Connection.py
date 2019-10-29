@@ -22,6 +22,7 @@ from com.sun.star.beans import PropertyValue
 from com.sun.star.beans.PropertyState import DIRECT_VALUE
 
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
+import irpjs.irp as irpjs
 
 
 class LibreOffice_Setup_Connection():
@@ -32,6 +33,9 @@ class LibreOffice_Setup_Connection():
         self.desktop = None
         self.docu = None
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
+
+    def start_remote_sever(self):
+        irpjs.run_irp_server(self)
 
     def start_LibreOffice(self):
         logging.info(['starting LibreOffice'])
@@ -64,18 +68,26 @@ class LibreOffice_Setup_Connection():
         # self.docu = self.desktop.loadComponentFromURL("file://" + file_path_url, "MyFrame", 8, data)
 
         # after the document is open this process will return True
+        logging.debug(["self.docu", self.docu])
         return True
 
     def close_document_LibreOffice(self):
         self.docu.close(False)
 
     def start_presentation(self):
-        self.docu.Presentation.IsAlwaysOnTop = True
-        self.docu.Presentation.IsEndless = False
-        self.docu.Presentation.IsFullScreen = True
-        self.docu.Presentation.IsMouseVisible = False
-        self.docu.Presentation.IsTransitionOnClick = False
-        self.docu.Presentation.Pause = 1
+        logging.debug(['beginning to start presentation'])
+        try:
+            logging.debug(['beginning to start presentation', self.docu, self.docu.Presentation])
+        except:
+            logging.warning("failed logging self.docu and/or self.docu.Presentation")
+        self.parent.infoscreen_process.kill()
+
+        # self.docu.Presentation.IsAlwaysOnTop = True
+        # self.docu.Presentation.IsEndless = False
+        # self.docu.Presentation.IsFullScreen = True
+        # self.docu.Presentation.IsMouseVisible = False
+        # self.docu.Presentation.IsTransitionOnClick = False
+        # self.docu.Presentation.Pause = 1
         self.docu.Presentation.start()
         logging.info('presentation started')
 
