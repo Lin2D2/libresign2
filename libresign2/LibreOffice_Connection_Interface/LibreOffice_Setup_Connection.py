@@ -68,6 +68,7 @@ class LibreOffice_Setup_Connection():
         # self.docu = self.desktop.loadComponentFromURL("file://" + file_path_url, "MyFrame", 8, data)
 
         # after the document is open this process will return True
+        logging.debug(["self.docu", self.docu])
         return True
 
     def close_document_LibreOffice(self):
