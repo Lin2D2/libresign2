@@ -81,9 +81,10 @@ class Playlist():
     def load_files (self):
         path = read_settings("SAVE_FOLDER")
         self.all_files = []
-
-        for f in os.listdir(path):
-            if os.path.isfile(os.path.join(path, f)):
+        logging.debug(["path to Save folder", cwd + path])
+        for f in os.listdir(cwd + path):
+            logging.debug(["path list dir", os.listdir(cwd + path)])
+            if os.path.isfile(os.path.join(cwd + path, f)):
                 item = {"file" : f}
                 self.all_files.append(f)
 
@@ -91,7 +92,7 @@ class Playlist():
 
     def load_playlist (self):
         path = read_settings("PLAYLIST")
-        fd = open(path, "r")
+        fd = open(cwd + path, "r")
 
         for line in fd:
             self.playlist.append({"file" : line[:-1]})
