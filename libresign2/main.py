@@ -119,6 +119,13 @@ class LibresignInstance():
             return False
 
     def run(self):
+        try:
+            os.mkdir(self.cwd + "/libresign2/presentations/pre_file")
+        except FileExistsError:
+            pass
+        with open(self.cwd + "/libresign2/presentations/playlist", "w+"):
+            pass
+
         if not self.network_connection():
             self.retry_network_connection()
 
