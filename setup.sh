@@ -3,7 +3,7 @@
 home="${PWD}/.."
 
 # TODO "apt-get install virtualenv python3-xdo python3-tk"
-echo you have to run "apt-get install virtualenv python3-xdo python3-tk"
+echo you have to run "apt-get install virtualenv python3-xdo python3-tk python3-uno"
 REQUIERMENTS=True
 
 if [ ! -d "/usr/bin/virtualenv" ]; then
@@ -17,7 +17,12 @@ if [ ! -d "/usr/bin/xdotool" ]; then
 fi
 
 if [ ! -d "/usr/share/doc/python-tk" ]; then
-    echo you dont have tkinter installed
+    echo you dont have python3-tk installed
+    REQUIERMENTS=False
+fi
+
+if [ ! -d "/usr/share/doc/python3-uno" ]; then
+    echo you dont have python3-uno installed
     REQUIERMENTS=False
 fi
 
@@ -32,5 +37,5 @@ if [ ! -d "env" ]; then
     echo "virtual env created, activating..."
     source env/bin/activate
     echo "installing packages: "
-    pip3 install Flask Pillow python-libxdo ipython gevent-websocket ifcfg qrcode uno
+    pip3 install Flask Pillow python-libxdo ipython gevent-websocket ifcfg qrcode
 fi
