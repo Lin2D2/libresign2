@@ -153,7 +153,7 @@ class LibresignInstance():
 
         # TODO start remote http sever
         cwd = os.getcwd()
-        os.chdir('/home/linus/PycharmProjects/libresign2' + '/impress-remote-js')
+        os.chdir(cwd + '/impress-remote-js')
         args = ['python3', '-m', 'http.server', str(self.read_settings("REMOTE_PORT"))]
         subprocess.Popen(args)
 
