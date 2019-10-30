@@ -15,13 +15,12 @@
 
 import time, logging, os, sys, multiprocessing, subprocess , threading
 import json, queue, signal
-import socket
+import ifcfg   # TODO pip3 install ifcfg
 
 from libresign2.presentations.playlist import Playlist
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
 import libresign2.infoscreen.infoscreen as infoscreen
 import libresign2.web_control_panel.web as web
-
 
 
 class LibresignInstance():
@@ -35,7 +34,7 @@ class LibresignInstance():
         self.network_connection_bool = False
         self.messages = queue.Queue()
         self.playlist = Playlist()
-        self.ip_addr = socket.gethostbyname(socket.gethostname())
+        self.ip_addr = self.get_ip_addr()
         self.lo_setup_conn = LibreOffice_Setup_Connection(parent=self)
 
     def read_settings(self, parameter):
@@ -76,6 +75,9 @@ class LibresignInstance():
                     logging.warning(['write_settings didn\'t wrote', [parameter, type(parameter)], [value, type(value)]])
             except:
                 logging.exception(["Unexpected error at writing settings:", sys.exc_info()[0], parameter, value])
+
+    def get_ip_addr(self):
+        return ifcfg.default_interface()["inet"]
 
     # TODO return True or False and logging.info()
     # TODO for now set to True
