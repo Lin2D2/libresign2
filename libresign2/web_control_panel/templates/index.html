@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block body %}
+<section class="">
+  <div id="main_holder">
+  <div id="main">
+    <h1 id="topheader">LibreOffice Screen Control Panel</h1> 
+
+    <!-- <button onclick="request('play');">Play presentation</button> -->
+    <!-- <button onclick="request('pause');">Pause presentation</button> -->
+    <!-- <button onclick="request('next');">Next presentation</button> -->
+    <!-- <button onclick="request('previous');">Previous presentation</button> -->
+
+    <a class="menu_button" href="http://{{hostname}}">Impress Remote</a>
+    <a class="menu_button inactive" href="#">Conference Mode</a>
+    <a class="menu_button" href="#">Sign Mode</a>
+
+    <h3>Playlist</h3>
+    <div>
+		<ul class="sortablePlaylist" id="playlist">
+        {% for item in playlist %}
+            {% if item.file == currently_playing %}
+                <li class="playlist_item_selected">
+            {% else %}
+                <li class="playlist_item">
+            {% endif %}
+                <p class="playlist_title">{{item["file"]}}</p>
+
+                <a class="playlist_button" 
+                   href="#" onclick="request('play_file', 'file={{item.file}}');">
+                    Play
+                </a>
+                <a class="playlist_button" 
+                   href="#" onclick="request('remove_file', 'file={{item.file}}');">
+                    Remove
+                </a>
+
+                <!-- <button class="playlist_dropdown" --> 
+                <!--         onmouseover="hover_playlist();"> -->
+                <!--     More v -->
+                <!-- </button> -->
+
+            <!-- <div class="playlist_dropdown_menu"> -->
+            <!--     <p>hi</p> -->
+            <!-- </div> -->
+            </li>
+        {% endfor %}
+		</ul>
+    </div>
+
+    <h3>Uploaded presentations</h3>
+    <div>
+		<ul class="sortableFiles" id="files">
+        {% for item in files%}
+            <li class="playlist_item" id="{{item}}">
+                <p class="playlist_title">{{item}}</p>
+
+                <a class="playlist_button" href="#" onclick="queue_file('{{item}}', 0);">Add to playlist</a>
+                <a class="playlist_button" href="topdownload/{{item}}" download>Download</a>
+                <!-- <button class="playlist_dropdown">More v</button> -->
+            </li>
+        {% endfor %}
+		</ul>
+    </div>
+
+    <div id="upload_box">
+        <h1 id="upload_title">Upload presentation</h1>
+
+        <form method="post" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="file" class="upload_input">
+            <button type="submit" value="Upload" class="upload_button">
+                Upload file
+            </button>
+        </form>
+    </div>
+
+    <div id="footer">
+    <p>The Document Foundation</p>
+    <a href="https://rptr.github.io/gsoc">Website</a>
+    <a href="https://github.com/rptr/libresign">Github</a>
+    </div>
+  </div>
+  </div>
+</section>
+
+<script type="text/javascript">
+    var playlist = sortable('.sortablePlaylist', {
+        acceptFrom: '.sortableFiles, .sortablePlaylist'
+    });
+
+    var files = sortable('.sortableFiles', {
+        acceptFrom: ''
+    });
+
+    playlist[0].addEventListener('sortupdate', function (e)
+    {
+        var container_id        = e.detail.origin.container.id;
+        var dest_container_id   = e.detail.destination.container.id;
+
+        // move file to playlist
+        if (container_id == "files" && dest_container_id == "playlist")
+        {
+            var new_index = e.detail.destination.index;
+            var filename  = e.detail.item.id;
+
+            queue_file(filename, new_index);
+        }
+
+        // reorder playlist -- not implemented for files (no point)
+        if (container_id == "playlist" && dest_container_id == "playlist")
+        {
+            var old_index = e.detail.origin.index;
+            var new_index = e.detail.destination.index;
+
+            request('order', "from="+old_index+"&to="+new_index);
+            console.log("reorder playlist");
+        }
+    });
+
+    function queue_file (filename, index)
+    {
+        request('queue_file', "to="+index+"&file="+filename);
+        console.log("queue file", filename, index);
+    }
+
+    function request (type, data)
+    {
+        var r = new XMLHttpRequest();
+        r.open("POST", '/'+type, true);
+        r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        r.send(data);
+    }
+
+    function hover_playlist (index)
+    {
+    }
+</script>
+
+{% endblock %}
