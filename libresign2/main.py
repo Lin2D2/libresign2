@@ -27,8 +27,9 @@ import libresign2.web_control_panel.web as web
 class LibresignInstance():
     def __init__(self):
         self.cwd = os.getcwd()
-        self.settings_path = self.cwd + "/settings.json"
-        self.home_dir = self.read_settings("HomeDir")
+        self.settings_path = self.cwd + "/libresign2/settings.json"
+        self.write_settings("HomeDir", self.cwd)
+        self.home_dir = self.cwd
         self.infoscreen_process = None
         self.remote_sever = None
         self.playlist = Playlist()
@@ -169,4 +170,4 @@ def setup():
     logging.info(["Setup completed", libresign_instance])
     libresign_instance.run()
 
-setup()
+# setup()

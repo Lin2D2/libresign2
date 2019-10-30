@@ -27,7 +27,7 @@ import libresign2.web_control_panel.flaskapp as flaskapp
 
 
 cwd = os.getcwd()
-settings_path = cwd + "/settings.json"
+settings_path = cwd + "/libresign2/settings.json"
 
 def read_settings(parameter):
     with open(settings_path, "r") as json_file:

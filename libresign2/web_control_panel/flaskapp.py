@@ -26,7 +26,7 @@ from libresign2.web_control_panel.request import Request
 app = Flask(__name__)
 web = None
 cwd = os.getcwd()
-settings_path = cwd + "/settings.json"
+settings_path = cwd + "/libresign2/settings.json"
 
 
 def read_settings(parameter):

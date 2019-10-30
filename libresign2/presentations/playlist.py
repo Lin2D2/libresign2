@@ -21,7 +21,7 @@ import json, sys
 from libresign2.web_control_panel.request import Request
 
 cwd = os.getcwd()
-settings_path = cwd + "/settings.json"
+settings_path = cwd + "/libresign2/settings.json"
 
 
 def read_settings(parameter):
