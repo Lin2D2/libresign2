@@ -41,8 +41,8 @@ class LibreOffice_Setup_Connection():
         self.subprocess_libreoffice_pid = subprocess.Popen(args).pid
         # TODO somehow kill the proc after done
         logging.info(['subprocess for LibreOffice: ', self.subprocess_libreoffice_pid])
-        logging.info(['sleeping', 1])
-        time.sleep(1)
+        logging.info(['sleeping', 5])
+        time.sleep(5)
         # TODO sleep muss weg
 
     def setup_LibreOffice_connection(self):
