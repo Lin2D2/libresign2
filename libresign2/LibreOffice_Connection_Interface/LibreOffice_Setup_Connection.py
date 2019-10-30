@@ -30,6 +30,7 @@ class LibreOffice_Setup_Connection():
         self.desktop = None
         self.docu = None
         self.current_filename = None
+        self.setup_LibreOffice_connection_number_of_tries = 0
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
 
     def start_remote_sever(self):
@@ -41,21 +42,29 @@ class LibreOffice_Setup_Connection():
         self.subprocess_libreoffice_pid = subprocess.Popen(args).pid
         # TODO somehow kill the proc after done
         logging.info(['subprocess for LibreOffice: ', self.subprocess_libreoffice_pid])
-        logging.info(['sleeping', 5])
-        time.sleep(5)
         # TODO sleep muss weg
 
     def setup_LibreOffice_connection(self):
-        localContext = uno.getComponentContext()
-        logging.debug(['setingup LibreOffice', localContext])
-        resolver = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
-        logging.debug(['setingup LibreOffice', resolver])
-        ctx = resolver.resolve('uno:pipe,name=libresign;urp;StarOffice.ComponentContext')
-        logging.debug(['setingup LibreOffice', ctx])
-        smgr = ctx.ServiceManager
-        logging.debug(['setingup LibreOffice', smgr])
-        self.desktop = smgr.createInstanceWithContext("com.sun.star.frame.Desktop", ctx)
-        logging.info(['setingup LibreOffice', self.desktop])
+        try:
+            localContext = uno.getComponentContext()
+            logging.debug(['setingup LibreOffice', localContext])
+            resolver = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
+            logging.debug(['setingup LibreOffice', resolver])
+            ctx = resolver.resolve('uno:pipe,name=libresign;urp;StarOffice.ComponentContext')
+            logging.debug(['setingup LibreOffice', ctx])
+            smgr = ctx.ServiceManager
+            logging.debug(['setingup LibreOffice', smgr])
+            self.desktop = smgr.createInstanceWithContext("com.sun.star.frame.Desktop", ctx)
+            logging.info(['setingup LibreOffice', self.desktop])
+        except:
+            self.setup_LibreOffice_connection_number_of_tries += 1
+            time.sleep(1)
+            logging.info("trying to connect to libreOffice")
+            if self.setup_LibreOffice_connection_number_of_tries <= 20:
+                self.setup_LibreOffice_connection()
+            else:
+                logging.warning("not able to connect to LibreOffice....... exiting..")
+                sys.exit("quit because no connection to LibreOffice")
 
     def open_document_LibreOffice(self, file_path_url):
         self.docu = self.desktop.loadComponentFromURL("file://" + file_path_url, "MyFrame", 8, ())
