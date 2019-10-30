@@ -56,7 +56,7 @@ class LibreOffice_Setup_Connection():
             logging.debug(['setingup LibreOffice', smgr])
             self.desktop = smgr.createInstanceWithContext("com.sun.star.frame.Desktop", ctx)
             logging.info(['setingup LibreOffice', self.desktop])
-        except ConnectionError:  # should include the NoConnectionExeption
+        except:   # TODO find the right exeption
             self.setup_LibreOffice_connection_number_of_tries += 1
             time.sleep(1)
             logging.info("trying to connect to libreOffice")
