@@ -32,6 +32,8 @@ class LibresignInstance():
         self.home_dir = self.cwd
         self.infoscreen_process = None
         self.remote_sever = None
+        self.network_connection_bool = False
+        self.messages = queue.Queue()
         self.playlist = Playlist()
         self.ip_addr = socket.gethostbyname(socket.gethostname())
         self.lo_setup_conn = LibreOffice_Setup_Connection(parent=self)
@@ -78,15 +80,43 @@ class LibresignInstance():
     # TODO return True or False and logging.info()
     # TODO for now set to True
     def network_connection(self):
-        return True
+        self.handle_web_request_loop = threading.Thread(target=self.handle_web_request, args=())
+        try:
+            self.network_connection_bool = True
+            self.handle_web_request_loop.start()
+            logging.info(["handle_web_request started"])
+            return True
+        except:
+            logging.warning(["handle_web_request not started"])
+            self.network_connection_bool = False
+            return False
 
     def retry_network_connection(self):
         while not self.network_connection():
             logging.warning(["no network connection"])
             time.sleep(2)
 
+    def handle_web_request(self):
+        while self.network_connection_bool:
+            try:
+                msg = self.messages.get(True, 0.2)
+                logging.debug(["handel web request", msg])
+                self.playlist.handle_web_request(msg)
+                self.lo_setup_conn.handle_web_request(msg)
+            except queue.Empty:
+                pass
+
     def get_playlist (self):
         return self.playlist
+
+    def load_presentation(self, file):
+        try:
+            self.lo_setup_conn.open_document_LibreOffice(
+                self.cwd + self.read_settings("SAVE_FOLDER") + "/" + file)
+            return True
+        except:
+            logging.warning("failed to load presentation")
+            return False
 
     def run(self):
         if not self.network_connection():
@@ -104,7 +134,7 @@ class LibresignInstance():
             logging.warning(["Infoscreen not started"])
 
         # start control panel
-        web.start(self, queue.Queue())
+        web.start(self, self.messages)
 
 
         # TODO start LibreOffice Instance
@@ -128,6 +158,11 @@ class LibresignInstance():
         subprocess.Popen(args)
 
         os.chdir(cwd)
+
+        # load presentations
+
+        self.playlist.load_files()
+        self.playlist.load_playlist()
 
         # TODO add an option to quit to Program
 

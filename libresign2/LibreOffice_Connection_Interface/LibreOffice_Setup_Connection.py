@@ -14,13 +14,10 @@
 #
 
 import os, time, sys, logging
-import subprocess, base64
+import subprocess
 import uno
-import unohelper
 
-from com.sun.star.beans import PropertyValue
-from com.sun.star.beans.PropertyState import DIRECT_VALUE
-
+from libresign2.web_control_panel.request import Request
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
 import irpjs.irp as irpjs
 
@@ -32,6 +29,7 @@ class LibreOffice_Setup_Connection():
         self.subprocess_libreoffice_pid = None
         self.desktop = None
         self.docu = None
+        self.current_filename = None
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
 
     def start_remote_sever(self):
@@ -61,6 +59,7 @@ class LibreOffice_Setup_Connection():
 
     def open_document_LibreOffice(self, file_path_url):
         self.docu = self.desktop.loadComponentFromURL("file://" + file_path_url, "MyFrame", 8, ())
+        self.current_filename = file_path_url.split("/")[-1]
 
         # data = []
         # data.append(PropertyValue("OpenMode", 0, "open", DIRECT_VALUE))
@@ -95,3 +94,46 @@ class LibreOffice_Setup_Connection():
         model = self.desktop.getCurrentComponent()
         logging.debug(['get Current object, desktop, libreoffice', model])
         model.Presentation.end()
+
+    def close_file (self):
+        logging.debug(["funktion: close_file | in file: unoremote", self.docu])
+        if self.docu:
+            self.docu.dispose()
+            self.docu = None
+
+        logging.debug("close file")
+
+    def playlist_changed (self):
+        size = self.parent.playlist.get_playlist_size()
+
+        newfile = self.parent.playlist.get_current()
+        oldfile = self.current_filename
+
+        if newfile != oldfile:
+            self.close_file()
+            self.parent.load_presentation(newfile)
+
+        logging.debug("locontrol.py::playlist_changed()")
+
+    def handle_web_request(self, msg):
+        mtype = msg.get('type')
+        logging.debug(["file type", mtype])
+
+        if Request.QUEUE_FILE == mtype or Request.REMOVE_FILE == mtype:
+            self.playlist_changed()
+
+        if Request.PLAY_FILE == mtype:
+            filename = msg.get('file')
+            logging.debug(["before checking if file is not current file", "filename", filename])
+            # TODO do you need this check
+            # if filename != self.parent.playlist.get_current():
+            #     logging.debug(["current file and filename", self.parent.playlist.get_current(), filename])
+            #     self.parent.load_presentation(filename)
+            self.parent.load_presentation(filename)
+
+        if Request.PLAY == mtype:
+            self.resume()
+
+        if Request.PAUSE == mtype:
+            self.pause()
+

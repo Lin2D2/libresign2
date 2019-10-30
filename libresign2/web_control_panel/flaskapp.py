@@ -76,7 +76,7 @@ def upload_file (file):
         print("no filename")
         return
 
-    file.save(os.path.join(read_settings("SAVE_FOLDER"), name))
+    file.save(os.path.join(cwd + read_settings("SAVE_FOLDER"), name))
 
     file_request(Request.ADD_FILE)
     print ("uploaded", name)
@@ -135,7 +135,7 @@ def upload():
 
 @app.route('/download/<filename>', methods=['GET'])
 def download(filename):
-    return send_file(os.path.join(read_settings("SAVE_FOLDER"), filename))
+    return send_file(os.path.join(cwd + read_settings("SAVE_FOLDER"), filename))
 
 @app.route('/remove_file', methods=['POST'])
 def remove():
