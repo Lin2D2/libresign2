@@ -11,6 +11,7 @@ if [ ${#1} -eq 0 ]; then
     libo="/usr/lib/libreoffice"
 fi
 
+# it wont run without this venv you have to copy this from libresign "1"
 source env/bin/activate
 
 export PYTHONPATH=$libo:'./libresign2':'../irpjs'
