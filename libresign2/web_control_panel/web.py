@@ -122,39 +122,8 @@ def get_addr_1():
     return addr
 
 
-# this works on Arch Linux ARM
-def get_addr_pi():
-    # NOTE linux only -- best i could do
-    p = subprocess.Popen(['ifconfig'], stdout=subprocess.PIPE)
-    result, err = p.communicate()
-    p.wait()
-
-    iface = signd.net_iface
-    found_iface = False
-
-    addr = ""
-
-    # regex knowledge would be useful...
-    for line in str(result).split('\\n'):
-        if found_iface:
-            if line.find('inet ') >= 0:
-                parts = [part for part in line.split(' ') if part != '']
-                addr = parts[1]
-                break
-
-        if line.find(iface) >= 0:
-            found_iface = True
-
-    logging.debug("web::get_addr_pi(): got addr " + addr)
-
-    return addr
-
-
 def get_address():
     port = read_settings("HTTP_PORT")
     addr = get_addr_1()
-
-    if len(addr) == 0:
-        addr = get_addr_pi()
 
     return addr
