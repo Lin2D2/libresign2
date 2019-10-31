@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Libresign Control panel</title>
+  </head>
+  <body>
+    {% extends "base.html" %}
+    {% block content %}
+
+    <div>
+      <h2 style="margin-left: 20px;">Playlist</h2>
+      <hr>
+      <ul id="playlist">
+
+      </ul>
+    </div>
+    <div>
+      <h2 style="margin-left: 20px;">Uploaded presentations</h2>
+      <hr>
+      <ul>
+
+      </ul>
+    </div>
+
+    <div class="light_gray">
+      <hr>
+      <div style="margin:40px">
+        <div>
+          <h2>Upload Presentation</h2>
+        </div>
+        <div style="display: inline-block">
+          <button style="display: inline-block">choose presentation</button>
+          <input style="display: inline-block" placeholder="choose file" disabled></input>
+          <button style="display: inline-block">upload presentation</button>
+        </div>
+      </div>
+      <hr>
+    </div>
+    
+    {% endblock %}
+  </body>
+</html>
