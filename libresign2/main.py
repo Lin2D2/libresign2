@@ -62,12 +62,18 @@ class LibresignInstance():
             try:
                 # add that you can do more then just write more than one parameter
                 if type(parameter) == list and type(value) == list:
-                    if len(parameter) == len(value):
-                        for p, v in parameter, value:
-                            data[p] = v
-                        json.dump(data, json_file)
-                        logging.debug(["successful wrote", value, "to", parameter])
-                elif type(parameter) == str:
+                    if len(parameter) >= 1 and len(value) >= 1:
+                        if len(parameter) == len(value):
+                            i = 0
+                            while i < len(parameter):
+                                data[parameter[i]] = value[i]
+                                i += 1
+                            json.dump(data, json_file)
+                            logging.debug(["successful wrote", value, "to", parameter])
+                    else:
+                        parameter = parameter[0]
+                        value = value[0]
+                if type(parameter) == str:
                     data[parameter] = value
                     json.dump(data, json_file)
                     logging.debug(["successfully wrote", value, "to", parameter])
@@ -209,9 +215,7 @@ def setup():
     logging.info(['Libresign Instance created', 'sys.args=', args[1:]])
     libresign_instance.write_settings("HomeDir", os.path.dirname(os.path.realpath(__file__)))
     # TODO write settings from above to settings.json
-    # libresign_instance.write_settings(settings_to_write_parameter, settings_to_write_value)
+    libresign_instance.write_settings(settings_to_write_parameter, settings_to_write_value)
     del settings_to_write_parameter, settings_to_write_value
     logging.info(["Setup completed", libresign_instance])
     libresign_instance.run()
-
-# setup()
