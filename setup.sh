@@ -4,30 +4,31 @@ home="${PWD}/.."
 
 # TODO "apt-get install virtualenv python3-xdo python3-tk"
 echo you have to run "apt-get install virtualenv python3-xdo python3-tk python3-uno"
-REQUIERMENTS=True
+REQUIERMENTS="True"
 
 if [ ! -d "/usr/bin/virtualenv" ]; then
     echo you dont have virtualenv installed
-    REQUIERMENTS=False
+    REQUIERMENTS="False"
 fi
 
 if [ ! -d "/usr/bin/xdotool" ]; then
     echo you dont have xdotool installed
-    REQUIERMENTS=False
+    REQUIERMENTS="False"
 fi
 
 if [ ! -d "/usr/share/doc/python-tk" ]; then
     echo you dont have python3-tk installed
-    REQUIERMENTS=False
+    REQUIERMENTS="False"
 fi
 
 if [ ! -d "/usr/share/doc/python3-uno" ]; then
     echo you dont have python3-uno installed
-    REQUIERMENTS=False
+    REQUIERMENTS="False"
 fi
 
-if [ REQUIERMENTS==False ]; then
+if [ "$REQUIERMENTS" = "False" ]; then
     echo requirments not satisfied, quiting...
+    exit
 fi
 
 if [ ! -d "env" ]; then
