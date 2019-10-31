@@ -28,7 +28,6 @@ fi
 
 if [ REQUIERMENTS==False ]; then
     echo requirments not satisfied, quiting...
-    break
 fi
 
 if [ ! -d "env" ]; then
@@ -37,5 +36,5 @@ if [ ! -d "env" ]; then
     echo "virtual env created, activating..."
     source env/bin/activate
     echo "installing packages: "
-    pip3 install Flask Pillow python-libxdo ipython gevent-websocket ifcfg qrcode
+    pip3 install --force-reinstall Flask Pillow python-libxdo ipython gevent-websocket ifcfg qrcode
 fi
