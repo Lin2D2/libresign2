@@ -6,6 +6,7 @@ To install use pip (only Python 3 is supported)
 ```
 pip install libresign
 ```
+But you can instead use the setup.sh wich can be found abouve.
 
 # Running(not working at the moment, but planned)
 
@@ -15,7 +16,7 @@ libresign [ --noinfo ] [ --libresign-home ]
 --noinfo: Don't show the information screen.
 --libresign-home: Specify the installation directory of libresign. (default: ~/.libresign)
 ```
-more planned...
+But you can instead use the start.sh wich can be found abouve.
 
 # Development
 
