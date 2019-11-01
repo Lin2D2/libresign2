@@ -1,1 +1,0 @@
-name = 'libresign-irpjs-server'
