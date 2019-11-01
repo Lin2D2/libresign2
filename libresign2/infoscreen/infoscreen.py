@@ -76,7 +76,7 @@ class InfoScreen(tk.Frame):
 
         # Qr Code !!!
 
-        imagepath = os.getcwd()
+        imagepath = os.getcwd() + "/libresign2"
 
         qr = qrcode.QRCode(
             version=5,
