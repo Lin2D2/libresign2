@@ -14,9 +14,9 @@ fi
 # it wont run without this venv you have to copy this from libresign "1"
 source env/bin/activate
 
-export PYTHONPATH=$libo:'./libresign2':'../irpjs'
+export PYTHONPATH=$libo:'./libresign2'
 export LD_LIBRARY_PATH=$libo
 export UNO_PATH=$libo
 export URE_BOOTSTRAP=$libo/fundamentalrc
-export FLASK_APP=app
+export FLASK_APP=app.py
 python3 -c "import main; main.setup()"
