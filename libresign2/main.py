@@ -20,7 +20,6 @@ import ifcfg   # TODO pip3 install ifcfg
 from libresign2.presentations.playlist import Playlist
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
 import libresign2.infoscreen.infoscreen as infoscreen
-import libresign2.web_control_panel.web as web
 
 
 class LibresignInstance():
@@ -30,7 +29,7 @@ class LibresignInstance():
         self.write_settings("HomeDir", self.cwd)
         self.home_dir = self.cwd
         self.infoscreen_process = None
-        self.remote_sever = None
+        self.remote_sever_proc = None
         self.network_connection_bool = False
         self.messages = queue.Queue()
         self.playlist = Playlist()
@@ -109,8 +108,6 @@ class LibresignInstance():
             try:
                 msg = self.messages.get(True, 0.2)
                 logging.debug(["handel web request", msg])
-                self.playlist.handle_web_request(msg)
-                self.lo_setup_conn.handle_web_request(msg)
             except queue.Empty:
                 pass
 
@@ -141,25 +138,23 @@ class LibresignInstance():
 
         # start info screen
         url = "http://" + self.ip_addr + ":5000"
-        self.infoscreen_process = multiprocessing.Process(target=infoscreen.start_info_screen, args=(url,))
+        self.infoscreen_process = multiprocessing.Process(
+            target=infoscreen.start_info_screen,
+            args=(url,))
         try:
             self.infoscreen_process.start()
             logging.info(["Infoscreen started"])
         except:
             logging.warning(["Infoscreen not started"])
 
-        # start control panel
-        web.start(self, self.messages)
-
-
         # TODO start LibreOffice Instance
         self.lo_setup_conn.start_LibreOffice()
         self.lo_setup_conn.setup_LibreOffice_connection()
 
-        # self.lo_setup_conn.open_document_LibreOffice(self.cwd + self.read_settings("SAVE_FOLDER") + '/Andras_Timar_LibOConf2011.odp')
-
         # TODO start remote sever
-        self.remote_sever_proc = threading.Thread(target=self.lo_setup_conn.start_remote_sever, args=())
+        self.remote_sever_proc = multiprocessing.Process(
+            target=self.lo_setup_conn.start_remote_sever,
+            args=(self.ip_addr, "5000"))
         try:
             self.remote_sever_proc.start()
             logging.info(["remote_sever started"])
