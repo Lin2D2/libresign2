@@ -33,6 +33,7 @@ class LibreOffice_Setup_Connection():
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
 
     def start_remote_sever(self, ip_addr, port):
+        logging.debug(["start remote sever debug", self, ip_addr, port])
         web_app.run(self, ip_addr, port)
 
     def start_LibreOffice(self):
