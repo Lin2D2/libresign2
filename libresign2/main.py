@@ -69,15 +69,23 @@ class LibresignInstance():
                                 i += 1
                             json.dump(data, json_file)
                             logging.debug(["successful wrote", value, "to", parameter])
+                            return
                     else:
-                        parameter = parameter[0]
-                        value = value[0]
+                        if len(parameter) != 0 and len(value) != 0:
+                            parameter = parameter[0]
+                            value = value[0]
+                        else:
+                            logging.warning(['write_settings didn\'t wrote', [parameter, type(parameter)], [value, type(value)]])
+                            json.dump(data, json_file)
+                            return
                 if type(parameter) == str:
                     data[parameter] = value
                     json.dump(data, json_file)
                     logging.debug(["successfully wrote", value, "to", parameter])
                 else:
                     logging.warning(['write_settings didn\'t wrote', [parameter, type(parameter)], [value, type(value)]])
+                    json.dump(data, json_file)
+                    return
             except:
                 logging.exception(["Unexpected error at writing settings:", sys.exc_info()[0], parameter, value])
 
