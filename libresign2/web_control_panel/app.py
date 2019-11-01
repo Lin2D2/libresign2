@@ -59,8 +59,3 @@ def run(parent, url, port):
     app = Flask(__name__)
     routes(app, parent)
     app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
-    # TODO the problem is the restart of the application "INFO:werkzeug: * Restarting with stat"
-    # TODO some how fix the restart ! it should not restart !!!
-
-#
-# run(None, "192.168.110.141", "5000")
