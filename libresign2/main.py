@@ -147,11 +147,11 @@ class LibresignInstance():
         except:
             logging.warning(["Infoscreen not started"])
 
-        # TODO start LibreOffice Instance
+        # start LibreOffice Instance
         self.lo_setup_conn.start_LibreOffice()
         self.lo_setup_conn.setup_LibreOffice_connection()
 
-        # TODO start remote sever
+        # start remote sever
         self.remote_sever_proc = multiprocessing.Process(
             target=self.lo_setup_conn.start_remote_sever,
             args=(self.ip_addr, "5000"))
