@@ -3,3 +3,5 @@
 /.idea
 *.pyc
 /impress-remote-js/
+/libresign2/presentations/playlist
+/env/*
