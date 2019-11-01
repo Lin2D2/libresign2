@@ -17,9 +17,8 @@ import os, time, sys, logging
 import subprocess
 import uno
 
-from libresign2.web_control_panel.request import Request
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
-import irpjs.irp as irpjs
+import libresign2.web_control_panel.app as web_app
 
 
 class LibreOffice_Setup_Connection():
@@ -34,7 +33,7 @@ class LibreOffice_Setup_Connection():
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
 
     def start_remote_sever(self):
-        irpjs.run_irp_server(self)
+        web_app.run(self)
 
     def start_LibreOffice(self):
         logging.info(['starting LibreOffice'])
@@ -123,26 +122,3 @@ class LibreOffice_Setup_Connection():
             self.parent.load_presentation(newfile)
 
         logging.debug("locontrol.py::playlist_changed()")
-
-    def handle_web_request(self, msg):
-        mtype = msg.get('type')
-        logging.debug(["file type", mtype])
-
-        if Request.QUEUE_FILE == mtype or Request.REMOVE_FILE == mtype:
-            self.playlist_changed()
-
-        if Request.PLAY_FILE == mtype:
-            filename = msg.get('file')
-            logging.debug(["before checking if file is not current file", "filename", filename])
-            # TODO do you need this check
-            # if filename != self.parent.playlist.get_current():
-            #     logging.debug(["current file and filename", self.parent.playlist.get_current(), filename])
-            #     self.parent.load_presentation(filename)
-            self.parent.load_presentation(filename)
-
-        if Request.PLAY == mtype:
-            self.resume()
-
-        if Request.PAUSE == mtype:
-            self.pause()
-

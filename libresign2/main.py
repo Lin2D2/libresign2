@@ -166,14 +166,6 @@ class LibresignInstance():
         except:
             logging.warning(["remote_sever not started"])
 
-        # TODO start remote http sever
-        cwd = os.getcwd()
-        os.chdir(cwd + '/impress-remote-js')
-        args = ['python3', '-m', 'http.server', str(self.read_settings("REMOTE_PORT"))]
-        subprocess.Popen(args)
-
-        os.chdir(cwd)
-
         # load presentations
 
         self.playlist.load_files()

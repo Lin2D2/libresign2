@@ -18,8 +18,6 @@
 import os, logging
 import json, sys
 
-from libresign2.web_control_panel.request import Request
-
 cwd = os.getcwd()
 settings_path = cwd + "/libresign2/settings.json"
 
