@@ -32,11 +32,11 @@ class LibreOffice_Setup_Connection():
         self.setup_LibreOffice_connection_number_of_tries = 0
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
 
-    def start_remote_sever(self, app, ip_addr, port):
+    def start_remote_sever(self, ip_addr, port):
         logging.debug(["start remote sever debug", self, ip_addr, port])
         # args = ["python3", '-c', '"import libresign2.web_control_panel.app as web_app; web_app.run(self, ip_addr, port)"']
         # pid = subprocess.Popen(args).pid
-        web_app.run(self, app, ip_addr, port)
+        web_app.run(self, ip_addr, port)
 
     def start_LibreOffice(self):
         logging.info(['starting LibreOffice'])

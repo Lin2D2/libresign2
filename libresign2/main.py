@@ -17,8 +17,6 @@ import time, logging, os, sys, multiprocessing, subprocess , threading
 import json, queue, signal
 import ifcfg   # TODO pip3 install ifcfg
 
-from flask import Flask
-
 from libresign2.presentations.playlist import Playlist
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
 import libresign2.infoscreen.infoscreen as infoscreen
@@ -144,10 +142,9 @@ class LibresignInstance():
         self.lo_setup_conn.setup_LibreOffice_connection()
 
         # start remote sever
-        app = Flask("libresign")
         self.remote_sever_proc = multiprocessing.Process(
             target=self.lo_setup_conn.start_remote_sever,
-            args=(app, self.ip_addr, "5000"))
+            args=(self.ip_addr, "5000"))
         try:
             self.remote_sever_proc.start()
             logging.info(["remote_sever started"])

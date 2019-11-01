@@ -55,9 +55,10 @@ def routes(app, parent):
         pass
 
 
-def run(parent, app, url, port):
+def run(parent, url, port):
+    app = Flask(__name__)
     routes(app, parent)
-    app.run(debug=True, host=url, port=port, threaded=True)
+    app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
     # TODO the problem is the restart of the application "INFO:werkzeug: * Restarting with stat"
     # TODO some how fix the restart ! it should not restart !!!
 
