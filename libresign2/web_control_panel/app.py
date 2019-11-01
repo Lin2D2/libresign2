@@ -65,10 +65,10 @@ def refresh():
     pass
 
 
-def run(parent_):
+def run(parent_, url, port):
     global parent
     parent = parent_
-    app.run(debug=True)
+    app.run(debug=True, host=url, port=port)
 
-
-run(None)
+#
+# run(None, "192.168.110.141", "5000")

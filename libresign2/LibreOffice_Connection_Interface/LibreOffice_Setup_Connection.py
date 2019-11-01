@@ -32,8 +32,8 @@ class LibreOffice_Setup_Connection():
         self.setup_LibreOffice_connection_number_of_tries = 0
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
 
-    def start_remote_sever(self):
-        web_app.run(self)
+    def start_remote_sever(self, ip_addr, port):
+        web_app.run(self, ip_addr, port)
 
     def start_LibreOffice(self):
         logging.info(['starting LibreOffice'])
