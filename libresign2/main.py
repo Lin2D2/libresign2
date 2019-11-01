@@ -17,6 +17,8 @@ import time, logging, os, sys, multiprocessing, subprocess , threading
 import json, queue, signal
 import ifcfg   # TODO pip3 install ifcfg
 
+from flask import Flask
+
 from libresign2.presentations.playlist import Playlist
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
 import libresign2.infoscreen.infoscreen as infoscreen
@@ -30,7 +32,6 @@ class LibresignInstance():
         self.home_dir = self.cwd
         self.infoscreen_process = None
         self.remote_sever_proc = None
-        self.network_connection_bool = False
         self.messages = queue.Queue()
         self.playlist = Playlist()
         self.ip_addr = self.get_ip_addr()
@@ -95,29 +96,12 @@ class LibresignInstance():
     # TODO return True or False and logging.info()
     # TODO for now set to True
     def network_connection(self):
-        self.handle_web_request_loop = threading.Thread(target=self.handle_web_request, args=())
-        try:
-            self.network_connection_bool = True
-            self.handle_web_request_loop.start()
-            logging.info(["handle_web_request started"])
-            return True
-        except:
-            logging.warning(["handle_web_request not started"])
-            self.network_connection_bool = False
-            return False
+        return True
 
     def retry_network_connection(self):
         while not self.network_connection():
             logging.warning(["no network connection"])
             time.sleep(2)
-
-    def handle_web_request(self):
-        while self.network_connection_bool:
-            try:
-                msg = self.messages.get(True, 0.2)
-                logging.debug(["handel web request", msg])
-            except queue.Empty:
-                pass
 
     def get_playlist (self):
         return self.playlist
@@ -160,9 +144,10 @@ class LibresignInstance():
         self.lo_setup_conn.setup_LibreOffice_connection()
 
         # start remote sever
+        app = Flask("libresign")
         self.remote_sever_proc = multiprocessing.Process(
             target=self.lo_setup_conn.start_remote_sever,
-            args=(self.ip_addr, "5000"))
+            args=(app, self.ip_addr, "5000"))
         try:
             self.remote_sever_proc.start()
             logging.info(["remote_sever started"])
