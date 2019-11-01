@@ -50,31 +50,6 @@ class Playlist():
         # current file index
         self.current    = 0
 
-    def handle_web_request (self, msg):
-        mtype = msg.get("type")
-
-        if mtype == Request.ADD_FILE:
-            self.load_files()
-
-        if mtype == Request.PLAY_FILE:
-            print("play file")
-            filename = msg.get("file")
-            self.select_file(filename)
-
-        if mtype == Request.ORDER:
-            from_i      = msg.get("from")
-            to_i        = msg.get("to")
-            self.order_playlist(from_i, to_i)
-
-        if mtype == Request.QUEUE_FILE:
-            to_i        = msg.get("to")
-            filename    = msg.get("file")
-            self.queue_file(to_i, filename)
-
-        if mtype == Request.REMOVE_FILE:
-            filename    = msg.get("file")
-            self.dequeue(filename)
-
     # load previously-uploaded presentations
     def load_files (self):
         path = read_settings("SAVE_FOLDER")
