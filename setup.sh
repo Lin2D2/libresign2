@@ -3,9 +3,9 @@
 home="${PWD}/.."
 args=("$@")
 
-echo runn with ${args[0]}
+echo runn with ${args[0]} ${args[1]}
 
-if [[ ${args[1]} = "--help" ]]; then
+if [[ ${args[0]} == "--help" ]]; then
     echo "--setup   to start setup"
     echo "--ignore if you want to not quit if the requirements are not satisfied"
     echo "    you may have to do this because the paths to check if th requirements are satisfied are not on all systems the same"
@@ -14,7 +14,7 @@ if [[ ${args[1]} = "--help" ]]; then
     exit
 fi
 
-if [[ ${args[1]} != "--setup" ]]; then
+if [[ ${args[0]} != "--setup" ]]; then
     echo "you are not in setup mode. In order to start setup: --setup or --help for more arguments"
     exit
 fi
@@ -43,7 +43,7 @@ if [[ ! -d "/usr/share/doc/python3-uno" ]]; then
     REQUIERMENTS="False"
 fi
 
-if [[ "$REQUIERMENTS" = "False" ]] || [[ ${args[1]} = "--ignore" ]]; then
+if [[ ${args[1]} != "--ignore" ]] && [[ "$REQUIERMENTS" == "False" ]]; then
     echo requirments not satisfied, quiting...
     exit
 fi
