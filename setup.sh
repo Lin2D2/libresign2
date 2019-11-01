@@ -14,7 +14,7 @@ if [[ ${args[1]} = "--help" ]]; then
     exit
 fi
 
-if [[ ${args[1]} = "--setup" ]]; then
+if [[ ${args[1]} != "--setup" ]]; then
     echo "you are not in setup mode. In order to start setup: --setup or --help for more arguments"
     exit
 fi
