@@ -34,6 +34,8 @@ class LibreOffice_Setup_Connection():
 
     def start_remote_sever(self, ip_addr, port):
         logging.debug(["start remote sever debug", self, ip_addr, port])
+        # args = ["python3", '-c', '"import libresign2.web_control_panel.app as web_app; web_app.run(self, ip_addr, port)"']
+        # pid = subprocess.Popen(args).pid
         web_app.run(self, ip_addr, port)
 
     def start_LibreOffice(self):

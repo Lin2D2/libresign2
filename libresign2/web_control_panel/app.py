@@ -1,9 +1,9 @@
 
 from flask import Flask, render_template
+import logging
 
 parent = None
 app = Flask(__name__)
-
 
 @app.route("/")
 def home():
@@ -68,6 +68,7 @@ def refresh():
 def run(parent_, url, port):
     global parent
     parent = parent_
+    logging.debug(["__name__", __name__])
     app.run(debug=True, host=url, port=port)
 
 #
