@@ -29,7 +29,7 @@
             <div id="upper_button_div">
                 <a id="step_back_button" class="button" href="{{ url_for('reverse_reverse') }}"><i class="fas fa-step-backward fa-7x"></i></a>
 
-                <a id="pause_play_button" class="button" href="{{ url_for('play') }}"><i class="fas fa-play fa-9x"></i></a>
+                <a id="pause_play_button" class="button" href="{{ url_for('play') }}"><i id="pause_play_icon" class="fas fa-play fa-9x"></i></a>
                 <!-- TODO change to <a id="pause_play_button" class="button"><i class="fas fa-pause fa-4x"></i></a> and back when pressed-->
 
                 <a id="step_forward_button" class="button" href="{{ url_for('forward_forward') }}"><i class="fas fa-step-forward fa-7x"></i></a>
@@ -44,5 +44,13 @@
 
             </div>
         </div>
+        <script>
+            // dosent work
+            /**
+            ('#pause_play_button').click(function(){
+                ('#pause_play_icon').toogleClass("fa-play fa-pause");
+            });
+            **/
+        </script>
     </body>
 </html>
