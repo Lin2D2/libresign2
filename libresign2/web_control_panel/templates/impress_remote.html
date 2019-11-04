@@ -8,53 +8,41 @@
 
         <script src="https://kit.fontawesome.com/186cbd47f1.js" crossorigin="anonymous"></script>
     </head>
-    <body style="text-align: center;">
+    <body>
         <div>
             <!--TODO place in center and scale with javascript...-->
-            <div class="center">
-            <ul id="upper_ul" class="center">
-                <li>
-                    <a class="button" href="{{ url_for('home') }}"><i class="fas fa-chevron-circle-left fa-4x"></i></a>
-                    <a class="button"><i class="fas fa-window-close fa-4x"></i></a>
-                </li>
+            <div id="header_div">
+                    <a id="return_button" class="button" href="{{ url_for('home') }}"><i class="fas fa-chevron-circle-left fa-5x"></i></a>
 
-                <li>
-                    <a class="button"><i class="fas fa-images fa-4x"></i></a>
-                </li>
-        
-                <li>
-                    <a class="button"><i class="fas fa-pause fa-4x"></i></a>
-                    <a class="button"><i class="fas fa-play fa-4x"></i></a>
-                </li>
+                    <!-- TODO some wehre but this <a class="button"><i class="fas fa-window-close fa-5x"></i></a> -->
 
-                <li>
-                    <a class="button"><i class="fas fa-fast-backward fa-4x"></i></a>
-                    <a class="button"><i class="fas fa-step-backward fa-4x"></i></a>
-                    <a class="button"><i class="fas fa-step-forward fa-4x"></i></a>
-                    <a class="button"><i class="fas fa-fast-forward fa-4x"></i></a>
-                </li>
-                <li>
-                    <a class="button"><i class="fas fa-sync-alt fa-4x"></i></a>
-                </li>
-            </ul>
+                    <!--spacer or fix one right and other left-->
+                    <a id="dots_button" class="button" href=""><i class="fas fa-ellipsis-h fa-5x"></i></a>
+                    
             </div>
 
-            <ul id="preview">
+            <div id="center_div">
+                <!-- TODO for preview and notes dummy text-->
+                <h1>Preview/Notes</h1>
+            </div>
 
-            </ul>
+            <div id="upper_button_div">
+                <a id="step_back_button" class="button" href="{{ url_for('reverse_reverse') }}"><i class="fas fa-step-backward fa-7x"></i></a>
 
-            <!--TODO change background if connected or not connected-->
-            <ul id="lower_ul">
-                <li>
-                    <p>{{presentation}}</p>
-                </li>
-                <li>
-                    <p>{{presentation_status}}</p>
-                </li>
-                <li>
-                    <p>{{connection_status}}</p>
-                </li>
-            </ul>
+                <a id="pause_play_button" class="button" href="{{ url_for('play') }}"><i class="fas fa-play fa-9x"></i></a>
+                <!-- TODO change to <a id="pause_play_button" class="button"><i class="fas fa-pause fa-4x"></i></a> and back when pressed-->
+
+                <a id="step_forward_button" class="button" href="{{ url_for('forward_forward') }}"><i class="fas fa-step-forward fa-7x"></i></a>
+            </div>
+
+            <div id="lower_button_div">
+                    <a id="images_button" class="button" href="{{ url_for('preview') }}"><i class="fas fa-images fa-5x"></i></a>
+                    <a id="reload_button" class="button" href="{{ url_for('refresh') }}"><i class="fas fa-sync-alt fa-5x"></i></a>
+            </div>
+
+            <div id="fotter_div">
+
+            </div>
         </div>
     </body>
 </html>
