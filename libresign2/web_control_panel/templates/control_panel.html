@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Libresign Control panel</title>
-  </head>
-  <body>
-    {% extends "base.html" %}
-    {% block content %}
+{% extends "base.html" %}
+{% block body %}
+<section>
+    
 
     <div>
       <h2 style="margin-left: 20px;">Playlist</h2>
@@ -29,15 +24,28 @@
         <div>
           <h2>Upload Presentation</h2>
         </div>
-        <div style="display: inline-block">
-          <button style="display: inline-block">choose presentation</button>
-          <input style="display: inline-block" placeholder="choose file" disabled></input>
-          <button style="display: inline-block">upload presentation</button>
+
+        <div>
+          <form method="post" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="file" class="upload_input">
+            <button type="submit" value="Upload" class="upload_button">
+                Upload file
+            </button>
+          </form>
         </div>
+
       </div>
       <hr>
     </div>
-    
-    {% endblock %}
-  </body>
-</html>
+    <script type="text/javascript">
+
+screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
+
+      if (screen.width <= 699) {
+      console.log("mobile");
+      };
+
+    </script>
+  
+</section>
+{% endblock %}
