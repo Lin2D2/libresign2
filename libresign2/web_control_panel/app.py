@@ -23,7 +23,6 @@ def routes(app, parent):
     def about():
         return render_template("about.html")
 
-    # TODO find better way or implement this way
     @app.route("/upload", methods=['POST'])
     def handleFileUpload():
         if 'file' in request.files:
