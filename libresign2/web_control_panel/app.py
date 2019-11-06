@@ -1,6 +1,8 @@
 
-from flask import Flask, render_template
-import logging
+import os
+
+from flask import Flask, render_template, request, redirect
+
 
 # TODO look here for how to create the app https://github.com/flaskbb/flaskbb/blob/master/flaskbb/app.py
 
@@ -20,6 +22,15 @@ def routes(app, parent):
     @app.route("/about")
     def about():
         return render_template("about.html")
+
+    # TODO find better way or implement this way
+    @app.route("/upload", methods=['POST'])
+    def handleFileUpload():
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename != '':
+                file.save(os.path.join('/home/space/Documents/libresign/development/libresign2/presentations/pre_file', file.filename))
+        return redirect("/")
 
     @app.route("/impress_remote/close")
     def close():
@@ -59,3 +70,7 @@ def run(parent, url, port):
     app = Flask(__name__)
     routes(app, parent)
     app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
+#     app.run(debug=True, host=url, port=port, threaded=True, use_reloader=True)
+#
+#
+# run(None, "192.168.178.73", "5000")
