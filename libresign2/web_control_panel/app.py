@@ -9,7 +9,9 @@ from flask import Flask, render_template, request, redirect
 def routes(app, parent):
     @app.route("/")
     def home():
-        return render_template("control_panel.html")
+        return render_template("control_panel.html",
+                               files=["stuff.odp"]
+                               )
 
     @app.route("/impress_remote")
     def impress_remote():
@@ -30,6 +32,11 @@ def routes(app, parent):
             if file.filename != '':
                 file.save(os.path.join('/home/space/Documents/libresign/development/libresign2/presentations/pre_file', file.filename))
         return redirect("/")
+
+    # @app.route('/get_uploads/<uploads>', methods=['GET'])
+    # def get_file():
+    #     uploads = os.listdir('/home/space/Documents/libresign/development/libresign2/presentations/pre_file')
+    #     return 'User %s' % escape("uploads")
 
     @app.route("/impress_remote/close")
     def close():
@@ -68,8 +75,8 @@ def routes(app, parent):
 def run(parent, url, port):
     app = Flask(__name__)
     routes(app, parent)
-    app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
-#     app.run(debug=True, host=url, port=port, threaded=True, use_reloader=True)
-#
-#
-# run(None, "192.168.178.73", "5000")
+    # app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
+    app.run(debug=True, host=url, port=port, threaded=True, use_reloader=True)
+
+
+run(None, "192.168.178.73", "5000")

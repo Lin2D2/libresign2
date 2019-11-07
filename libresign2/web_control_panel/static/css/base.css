@@ -23,7 +23,7 @@ header {
     width: 100%;
 }
 
-ul {
+.menu_ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -31,11 +31,11 @@ ul {
     background-color: #303030;
   }
   
-li {
+.menu_li {
     float: left;
   }
   
-li a {
+.menu_li_a {
     display: block;
     color: white;
     text-align: center;
@@ -47,3 +47,31 @@ li a {
 li a:hover {
     background-color: #111;
   }
+
+#files {
+    list-style-type: none;
+}
+
+.files_ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #4A4A4A;
+}
+
+.files_li {
+    float: left;
+}
+
+.files_p {
+  margin-left: 20px;
+}
+
+.files_a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}

@@ -23,6 +23,19 @@
       <div style="margin:40px">
         <div>
           <h2>Upload Presentation</h2>
+          <div>
+            <ul class="sortableFiles" id="files">
+                {% for item in files %}
+                    <li class="playlist_item" id="{{item}}">
+                      <ul class="files_ul">
+                        <li class="files_li"><p class="playlist_title files_p">{{item}}</p></li>
+                        <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="topdownload/{{item}}" download>Download</a></li>
+                        <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="#" onclick="queue_file('{{item}}', 0);">Add to playlist</a></li>
+                      </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+            </div>
         </div>
 
         <div>
