@@ -3,14 +3,16 @@ import os
 
 from flask import Flask, render_template, request, redirect
 
-
 # TODO look here for how to create the app https://github.com/flaskbb/flaskbb/blob/master/flaskbb/app.py
+
+pre_file_dir = '/home/space/Documents/libresign/development/libresign2/presentations/pre_file'
+
 
 def routes(app, parent):
     @app.route("/")
     def home():
         return render_template("control_panel.html",
-                               files=["stuff.odp"]
+                               files=os.listdir(pre_file_dir)
                                )
 
     @app.route("/impress_remote")
@@ -30,7 +32,7 @@ def routes(app, parent):
         if 'file' in request.files:
             file = request.files['file']
             if file.filename != '':
-                file.save(os.path.join('/home/space/Documents/libresign/development/libresign2/presentations/pre_file', file.filename))
+                file.save(os.path.join(pre_file_dir, file.filename))
         return redirect("/")
 
     # @app.route('/get_uploads/<uploads>', methods=['GET'])
