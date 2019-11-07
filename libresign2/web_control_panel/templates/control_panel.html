@@ -7,23 +7,40 @@
       <h2 style="margin-left: 20px;">Playlist</h2>
       <hr>
       <div>
-          <ul class="sortableFiles" id="playlist_items">
+          <ul class="sortablePlaylist" id="playlist">
               {% for item in playlist_items %}
-                  <li class="playlist_item" id="{{item}}">
-                    <ul class="files_ul">
-                      <li class="files_li"><p class="playlist_title files_p">{{item}}</p></li>
-                      <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="topdownload/{{item}}" download>Download</a></li>
-                      <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="#" onclick="queue_file('{{item}}', 0);">Add to playlist</a></li>
-                    </ul>
+                  {% if item.file == currently_playing %}
+                      <li class="playlist_item_selected">
+                  {% else %}
+                      <li class="playlist_item">
+                  {% endif %}
+                      <p class="playlist_title">{{item["file"]}}</p>
+      
+                      <a class="playlist_button" 
+                         href="#" onclick="request('play_file', 'file={{item.file}}');">
+                          Play
+                      </a>
+                      <a class="playlist_button" 
+                         href="#" onclick="request('remove_file', 'file={{item.file}}');">
+                          Remove
+                      </a>
+      
+                      <!-- <button class="playlist_dropdown" --> 
+                      <!--         onmouseover="hover_playlist();"> -->
+                      <!--     More v -->
+                      <!-- </button> -->
+      
+                  <!-- <div class="playlist_dropdown_menu"> -->
+                  <!--     <p>hi</p> -->
+                  <!-- </div> -->
                   </li>
               {% endfor %}
           </ul>
-      </div>
-      <ul id="playlist">
-
-      </ul>
+        </div>
     </div>
+
     <div>
+      
       <h2 style="margin-left: 20px;">Uploaded presentations</h2>
       <hr>
         <div>
@@ -66,6 +83,18 @@ screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrient
 
       if (screen.width <= 699) {
       console.log("mobile");
+      };
+
+      function queue_file (filename, index) {
+        request('queue_file', "to="+index+"&file="+filename);
+        console.log("queue file", filename, index);
+      };
+
+      function request (type, data) {
+        var r = new XMLHttpRequest();
+        r.open("POST", '/'+type, true);
+        r.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        r.send(data);
       };
 
     </script>
