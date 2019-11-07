@@ -12,7 +12,8 @@ def routes(app, parent):
     @app.route("/")
     def home():
         return render_template("control_panel.html",
-                               files=os.listdir(pre_file_dir)
+                               files=os.listdir(pre_file_dir),
+                               playlist_items=["test.odt"]
                                )
 
     @app.route("/impress_remote")

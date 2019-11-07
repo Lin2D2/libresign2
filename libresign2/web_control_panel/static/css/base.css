@@ -52,6 +52,10 @@ li a:hover {
     list-style-type: none;
 }
 
+#playlist_items {
+    list-style-type: none;
+}
+
 .files_ul {
     list-style-type: none;
     margin: 0;
