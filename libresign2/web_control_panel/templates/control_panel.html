@@ -13,17 +13,7 @@
     <div>
       <h2 style="margin-left: 20px;">Uploaded presentations</h2>
       <hr>
-      <ul>
-
-      </ul>
-    </div>
-
-    <div class="light_gray">
-      <hr>
-      <div style="margin:40px">
         <div>
-          <h2>Upload Presentation</h2>
-          <div>
             <ul class="sortableFiles" id="files">
                 {% for item in files %}
                     <li class="playlist_item" id="{{item}}">
@@ -35,9 +25,16 @@
                     </li>
                 {% endfor %}
             </ul>
-            </div>
         </div>
+      <ul>
 
+      </ul>
+    </div>
+
+    <div class="light_gray">
+      <h2 style="margin-left: 20px;">Upload presentation</h2>
+      <hr>
+      <div style="margin:40px">
         <div>
           <form method="post" action="/upload" enctype="multipart/form-data">
             <input type="file" name="file" class="upload_input">
