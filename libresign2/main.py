@@ -13,13 +13,19 @@
 # License.
 #
 
-import time, logging, os, sys, multiprocessing, subprocess , threading
-import json, queue, signal
-import ifcfg   # TODO pip3 install ifcfg
+import json
+import logging
+import multiprocessing
+import os
+import queue
+import sys
+import threading
+import time
 
-from libresign2.presentations.playlist import Playlist
-from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
+import ifcfg  # TODO pip3 install ifcfg
 import libresign2.infoscreen.infoscreen as infoscreen
+from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
+from libresign2.presentations.playlist import Playlist
 
 
 class LibresignInstance():
@@ -142,7 +148,7 @@ class LibresignInstance():
         self.lo_setup_conn.setup_LibreOffice_connection()
 
         # start remote sever
-        self.remote_sever_proc = multiprocessing.Process(
+        self.remote_sever_proc = threading.Thread(
             target=self.lo_setup_conn.start_remote_sever,
             args=(self.ip_addr, "5000"))
         try:

@@ -1,7 +1,8 @@
 
+import logging
 import os
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, redirect
 
 # TODO look here for how to create the app https://github.com/flaskbb/flaskbb/blob/master/flaskbb/app.py
 
@@ -13,7 +14,7 @@ def routes(app, parent):
     def home():
         return render_template("control_panel.html",
                                files=os.listdir(pre_file_dir),
-                               playlist_items=["test.odt"]
+                               playlist_items=parent.parent.playlist.load_playlist()
                                )
 
     @app.route("/impress_remote")
@@ -40,6 +41,20 @@ def routes(app, parent):
     # def get_file():
     #     uploads = os.listdir('/home/space/Documents/libresign/development/libresign2/presentations/pre_file')
     #     return 'User %s' % escape("uploads")
+
+    @app.route("/request/<action>/<data>")
+    def request(action, data):
+        logging.debug(action)
+        logging.debug(data)
+        if action == "add":
+            playlist_add(data)
+        if action == "Download":
+            logging.debug("download")
+        if action == "play":
+            logging.debug("play")
+        if action == "remove":
+            playlist_remove(data)
+        return redirect("/")
 
     @app.route("/impress_remote/close")
     def close():
@@ -74,12 +89,18 @@ def routes(app, parent):
     def refresh():
         pass
 
+    def playlist_add(data):
+        parent.parent.playlist.queue_file(data)
+
+    def playlist_remove(data):
+        parent.parent.playlist.dequeue(data)
+
 
 def run(parent, url, port):
     app = Flask(__name__)
     routes(app, parent)
-    # app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
-    app.run(debug=True, host=url, port=port, threaded=True, use_reloader=True)
-
-
-run(None, "192.168.178.73", "5000")
+    app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
+#     app.run(debug=True, host=url, port=port, threaded=True, use_reloader=True)
+#
+#
+# run(None, "192.168.178.73", "5000")

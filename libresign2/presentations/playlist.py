@@ -15,8 +15,10 @@
 # Contributor(s):
 # Rasmus P J <wasmus@zom.bi>
 #
-import os, logging
-import json, sys
+import json
+import logging
+import os
+import sys
 
 cwd = os.getcwd()
 settings_path = cwd + "/libresign2/settings.json"
@@ -68,51 +70,49 @@ class Playlist():
         fd = open(cwd + path, "r")
 
         for line in fd:
-            self.playlist.append({"file" : line[:-1]})
+            # TODO clean up !!!
+            del self.playlist
+            self.playlist = []
+            self.playlist.append(line)
 
         fd.close()
         print("loaded playlist", self.playlist)
-
-    # save playlist file (list of items, in order)
-    def save_playlist (self):
-        fd = open("playlist", "w")
-
-        for i in self.playlist:
-            fd.write(i.get("file"))
-            fd.write('\n')
-
-        fd.close()
-        print("saved playlist", self.playlist)
-
-    # swap files in places from_i and to_i
-    def order_playlist (self, from_i, to_i):
-        if (from_i >= 0 and from_i < len(self.playlist) and 
-                to_i >= 0 and to_i < len(self.playlist)):
-            tmp = self.playlist.pop(from_i)
-            self.playlist.insert(to_i, tmp)
-            self.save_playlist()
+        return self.playlist
 
     # add file to playlist
-    def queue_file (self, to_index, filename):
-        if self.all_files.count(filename) == 0:
-            return
-
+    def queue_file(self, filename):
+        logging.debug("queue_file run")
         for item in self.playlist:
-            if item.get("file") == filename:
+            if item == filename:
                 return
-
-        if to_index >= 0 and to_index <= len(self.playlist):
-            self.playlist.insert(to_index, {'file' : filename})
-            self.save_playlist()
+        path = read_settings("PLAYLIST")
+        logging.debug(path)
+        with open(cwd + path, "r") as file:
+            logging.debug("queue_file check if alredy in playlist")
+            for line in file:
+                if line == filename:
+                    return
+        logging.debug("queue_file adding to playlist")
+        self.playlist.append(filename)
+        with open(cwd + path, "a") as file:
+            file.write(filename)
+            logging.debug("queue_file added to playlist")
+            return
 
     # remove file from playlist
     def dequeue (self, filename):
         for item in self.playlist:
-            if item.get("file") == filename:
-                self.playlist.remove(item)
-                break
-
-        self.save_playlist()
+            if item == filename:
+                del self.playlist[self.playlist.index(item)]
+        path = read_settings("PLAYLIST")
+        logging.debug(path)
+        # TODO clean up !!!
+        with open(cwd + path, "w") as file:
+            logging.debug("queue_file check if alredy in playlist")
+            if len(self.playlist) == 0:
+                file.write("")
+            for e in self.playlist:
+                file.write(e + "\n")
 
     # select file to be played right now
     def select_file (self, filename):
@@ -133,13 +133,3 @@ class Playlist():
             return self.playlist[self.current]['file']
         else:
             return None
-
-    def get_playlist_size (self):
-        return len(self.playlist)
-
-    def next (self):
-        if len(self.playlist) == 0:
-            self.current = 0
-        else:
-            self.current = (self.current + 1) % len(self.playlist)
-
