@@ -93,6 +93,8 @@ class LibreOffice_Setup_Connection():
             logging.debug(['beginning to start presentation', self.docu, self.docu.Presentation])
         except:
             logging.warning("failed logging self.docu and/or self.docu.Presentation")
+        logging.debug(self.parent.infoscreen_process)
+        # TODO getting error when i try to kill the process for no reaseon
         self.parent.infoscreen_process.kill()
 
         # self.docu.Presentation.IsAlwaysOnTop = True
