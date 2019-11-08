@@ -51,7 +51,6 @@ def routes(app, parent):
         if action == "Download":
             logging.debug("download")
         if action == "play":
-            # TODO getting error with return value
             parent.open_document_LibreOffice(data)
         if action == "remove":
             playlist_remove(data)
@@ -69,10 +68,12 @@ def routes(app, parent):
     @app.route("/impress_remote/play")
     def play():
         parent.start_presentation()
+        return redirect("/impress_remote")
 
     @app.route("/impress_remote/reverse_reverse")
     def reverse_reverse():
         parent.lo_slideshow_contr.go_to_previous_Slide()
+        return redirect("/impress_remote")
 
     @app.route("/impress_remote/reverse")
     def reverse():
@@ -85,6 +86,7 @@ def routes(app, parent):
     @app.route("/impress_remote/forward_forward")
     def forward_forward():
         parent.lo_slideshow_contr.go_to_next_Slide()
+        return redirect("/impress_remote")
 
     @app.route("/impress_remote/refresh")
     def refresh():
