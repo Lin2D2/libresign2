@@ -67,7 +67,7 @@ def routes(app, parent):
 
     @app.route("/impress_remote/play")
     def play():
-        pass
+        parent.start_presentation()
 
     @app.route("/impress_remote/reverse_reverse")
     def reverse_reverse():
