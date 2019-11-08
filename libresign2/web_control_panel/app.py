@@ -51,7 +51,7 @@ def routes(app, parent):
         if action == "Download":
             logging.debug("download")
         if action == "play":
-            logging.debug("play")
+            parent.open_document_LibreOffice(data)
         if action == "remove":
             playlist_remove(data)
         return redirect("/")

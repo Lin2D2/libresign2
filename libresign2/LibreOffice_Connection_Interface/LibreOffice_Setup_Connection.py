@@ -13,12 +13,14 @@
 # License.
 #
 
-import os, time, sys, logging
+import logging
 import subprocess
-import uno
+import sys
+import time
 
-from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
 import libresign2.web_control_panel.app as web_app
+import uno
+from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
 
 
 class LibreOffice_Setup_Connection():
@@ -68,7 +70,8 @@ class LibreOffice_Setup_Connection():
                 logging.warning("not able to connect to LibreOffice....... exiting..")
                 sys.exit("quit because no connection to LibreOffice")
 
-    def open_document_LibreOffice(self, file_path_url):
+    def open_document_LibreOffice(self, file):
+        file_path_url = self.p_cwd + self.parent.read_settings("SAVE_FOLDER") + "/" + file
         self.docu = self.desktop.loadComponentFromURL("file://" + file_path_url, "MyFrame", 8, ())
         self.current_filename = file_path_url.split("/")[-1]
 
