@@ -51,6 +51,7 @@ def routes(app, parent):
         if action == "Download":
             logging.debug("download")
         if action == "play":
+            # TODO getting error with return value
             parent.open_document_LibreOffice(data)
         if action == "remove":
             playlist_remove(data)
