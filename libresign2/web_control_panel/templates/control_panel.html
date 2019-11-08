@@ -10,29 +10,30 @@
           <ul class="sortablePlaylist" id="playlist">
               {% for item in playlist_items %}
                   {% if item.file == currently_playing %}
-                      <li class="playlist_item_selected">
+                    <li class="playlist_item_selected">
+                      <ul class="playlist_item_ul">
                   {% else %}
-                      <li class="playlist_item">
+                    <li class="playlist_item">
+                      <ul class="playlist_item_ul">
                   {% endif %}
-                      <p class="playlist_title">{{item["file"]}}</p>
-      
-                      <a class="playlist_button" 
+                        <li class="playlist_item_li">
+                          <p class="playlist_title playlist_item_p">{{item["file"]}}</p>
+                        </li>
+
+                        <li class="playlist_item_li" style="float: right;">
+                            <a class="playlist_button playlist_item_a" 
+                           href="#" onclick="request('remove_file', 'file={{item.file}}');">
+                            Remove
+                            </a>
+                        </li>
+                      
+                        <li class="playlist_item_li" style="float: right;">
+                          <a class="playlist_button playlist_item_a" 
                          href="#" onclick="request('play_file', 'file={{item.file}}');">
                           Play
-                      </a>
-                      <a class="playlist_button" 
-                         href="#" onclick="request('remove_file', 'file={{item.file}}');">
-                          Remove
-                      </a>
-      
-                      <!-- <button class="playlist_dropdown" --> 
-                      <!--         onmouseover="hover_playlist();"> -->
-                      <!--     More v -->
-                      <!-- </button> -->
-      
-                  <!-- <div class="playlist_dropdown_menu"> -->
-                  <!--     <p>hi</p> -->
-                  <!-- </div> -->
+                          </a>
+                        </li>
+                    </ul>
                   </li>
               {% endfor %}
           </ul>
