@@ -1,14 +1,31 @@
 <!DOCTYPE html>
-<meta name="viewport" content="width=500, initial-scale=1">
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="../static/css/style.css">
-        <script src="{{url_for('static', filename='html5sortable.js')}}"></script>
-    </head>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, inital-scale=1.0">
+    <title>Flask Parent Template</title>
+    <!--stylesheet-->
+    <link rel="stylesheet" href="{{ url_for('static',    filename='css/base.css') }}">
+  </head>
+  <body>
+    <header id="header" class="light_gray">
+      <div class="container">
+        <h1 class="title">Libresign2 Control panel</h1> 
+      </div>
+      <div class="container">
+        <nav>
+          <ul class="menu_ul">
+            <li class="menu_li"><a class="menu_li_a" href="{{ url_for('home') }}">Control Panel</a></li>
+            <li class="menu_li"><a class="menu_li_a" href="{{ url_for('impress_remote') }}">Impress Remote</a></li>
+            <li class="menu_li" style="float:right"><a class="menu_li_a" href="{{ url_for('about') }}">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
 
-    <body>
-    {% block body %}{% endblock %}
-    {% block scripts %}{% endblock %}
-    </body>
+
+{% block body %}
+{% endblock %}
+
+ </body>
 </html>

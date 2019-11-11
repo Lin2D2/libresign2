@@ -1,0 +1,90 @@
+body {
+    background: #4A4A4A; 
+    color: white; 
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    text-align: center;
+}
+
+.light_gray {
+    background: #636363;
+}
+
+.dark_gray {
+    background: #303030;
+}
+
+.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    background: #4A4A4A;
+    margin: 0;
+    border: none;
+    color: white;
+}
+  
+.title {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#return_button {
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    transform: translate(-2%, -2%);
+}
+
+#dots_button  {
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    transform: translate(-2%, -2%);
+}
+
+#center_div {
+    position: absolute;
+    border: solid 2px #636363;
+    height: 50%;
+    width: 85%;
+    top: 12%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+#step_back_button {
+    position: absolute;
+    left: 8%;
+    bottom: 18%;
+    transform: translate(-8%, -18%);
+}
+
+#pause_play_button {
+    position: absolute;
+    left: 50%;
+    bottom: 17%;
+    transform: translate(-50%, -15%);
+}
+
+#step_forward_button {
+    position: absolute;
+    right: 8%;
+    bottom: 18%;
+    transform: translate(-8%, -18%);
+}
+
+#images_button {
+    position: absolute;
+    left: 15%;
+    bottom: 5%;
+    transform: translate(-15%, -5%);
+}
+
+#reload_button {
+    position: absolute;
+    right: 15%;
+    bottom: 5%;
+    transform: translate(-15%, -5%);
+}

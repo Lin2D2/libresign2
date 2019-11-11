@@ -13,13 +13,14 @@
 # License.
 #
 
-import os, time, sys, logging
+import logging
 import subprocess
-import uno
+import sys
+import time
 
-from libresign2.web_control_panel.request import Request
+import libresign2.web_control_panel.app as web_app
+import uno
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
-import irpjs.irp as irpjs
 
 
 class LibreOffice_Setup_Connection():
@@ -33,8 +34,11 @@ class LibreOffice_Setup_Connection():
         self.setup_LibreOffice_connection_number_of_tries = 0
         self.lo_slideshow_contr = LibreOffice_SlideShow_Controlls(parent=self)
 
-    def start_remote_sever(self):
-        irpjs.run_irp_server(self)
+    def start_remote_sever(self, ip_addr, port):
+        logging.debug(["start remote sever debug", self, ip_addr, port])
+        # args = ["python3", '-c', '"import libresign2.web_control_panel.app as web_app; web_app.run(self, ip_addr, port)"']
+        # pid = subprocess.Popen(args).pid
+        web_app.run(self, ip_addr, port)
 
     def start_LibreOffice(self):
         logging.info(['starting LibreOffice'])
@@ -66,7 +70,8 @@ class LibreOffice_Setup_Connection():
                 logging.warning("not able to connect to LibreOffice....... exiting..")
                 sys.exit("quit because no connection to LibreOffice")
 
-    def open_document_LibreOffice(self, file_path_url):
+    def open_document_LibreOffice(self, file):
+        file_path_url = self.p_cwd + self.parent.read_settings("SAVE_FOLDER") + "/" + file
         self.docu = self.desktop.loadComponentFromURL("file://" + file_path_url, "MyFrame", 8, ())
         self.current_filename = file_path_url.split("/")[-1]
 
@@ -88,7 +93,8 @@ class LibreOffice_Setup_Connection():
             logging.debug(['beginning to start presentation', self.docu, self.docu.Presentation])
         except:
             logging.warning("failed logging self.docu and/or self.docu.Presentation")
-        self.parent.infoscreen_process.kill()
+        logging.debug(self.parent.infoscreen_process)
+        self.parent.infoscreen_process.terminate()
 
         # self.docu.Presentation.IsAlwaysOnTop = True
         # self.docu.Presentation.IsEndless = False
@@ -123,26 +129,3 @@ class LibreOffice_Setup_Connection():
             self.parent.load_presentation(newfile)
 
         logging.debug("locontrol.py::playlist_changed()")
-
-    def handle_web_request(self, msg):
-        mtype = msg.get('type')
-        logging.debug(["file type", mtype])
-
-        if Request.QUEUE_FILE == mtype or Request.REMOVE_FILE == mtype:
-            self.playlist_changed()
-
-        if Request.PLAY_FILE == mtype:
-            filename = msg.get('file')
-            logging.debug(["before checking if file is not current file", "filename", filename])
-            # TODO do you need this check
-            # if filename != self.parent.playlist.get_current():
-            #     logging.debug(["current file and filename", self.parent.playlist.get_current(), filename])
-            #     self.parent.load_presentation(filename)
-            self.parent.load_presentation(filename)
-
-        if Request.PLAY == mtype:
-            self.resume()
-
-        if Request.PAUSE == mtype:
-            self.pause()
-

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block body %}
+<section>
+    
+
+    <div>
+      <h2 style="margin-left: 20px;">Playlist</h2>
+      <hr>
+      <div>
+          <ul class="sortablePlaylist" id="playlist">
+              {% for item in playlist_items %}
+                  {% if item.file == currently_playing %}
+                    <li class="playlist_item_selected">
+                      <ul class="playlist_item_ul">
+                  {% else %}
+                    <li class="playlist_item">
+                      <ul class="playlist_item_ul">
+                  {% endif %}
+                        <li class="playlist_item_li">
+                          <p class="playlist_title playlist_item_p">{{item["file"]}}</p>
+                        </li>
+
+                        <li class="playlist_item_li" style="float: right;">
+                            <a class="playlist_button playlist_item_a" 
+                           href="{{ url_for('request', action='remove', data=item) }}">
+                            Remove
+                            </a>
+                        </li>
+                      
+                        <li class="playlist_item_li" style="float: right;">
+                          <a class="playlist_button playlist_item_a" 
+                         href="{{ url_for('request', action='play', data=item) }}">
+                          Play
+                          </a>
+                        </li>
+                    </ul>
+                  </li>
+              {% endfor %}
+          </ul>
+        </div>
+    </div>
+
+    <div>
+      
+      <h2 style="margin-left: 20px;">Uploaded presentations</h2>
+      <hr>
+        <div>
+            <ul class="sortableFiles" id="files">
+                {% for item in files %}
+                    <li class="playlist_item" id="{{item}}">
+                      <ul class="files_ul">
+                        <li class="files_li"><p class="playlist_title files_p">{{item}}</p></li>
+                        <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="{{ url_for('request', action='download', data=item) }}" download>Download</a></li>
+                        <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="{{ url_for('request', action='add', data=item) }}">Add to playlist</a></li>
+                      </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+      <ul>
+
+      </ul>
+    </div>
+
+    <div class="light_gray">
+      <h2 style="margin-left: 20px;">Upload presentation</h2>
+      <hr>
+      <div style="margin:40px">
+        <div>
+          <form method="post" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="file" class="upload_input">
+            <button type="submit" value="Upload" class="upload_button">
+                Upload file
+            </button>
+          </form>
+        </div>
+
+      </div>
+      <hr>
+    </div>
+    <script type="text/javascript">
+
+screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation;
+
+      if (screen.width <= 699) {
+      console.log("mobile");
+      };
+
+      function queue_file (filename, index) {
+        request('queue_file', "to="+index+"&file="+filename);
+        console.log("queue file", filename, index);
+      };
+
+      function request (type, data) {
+        var r = new XMLHttpRequest();
+        r.open("POST", '/request', true);
+        r.send([type, data]);
+      };
+
+    </script>
+  
+</section>
+{% endblock %}

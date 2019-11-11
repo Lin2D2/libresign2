@@ -1,0 +1,105 @@
+body {
+    background: #4A4A4A; 
+    color: white; 
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+.light_gray {
+      background: #636363
+}
+
+.dark_gray {
+      background: #303030
+}
+  
+.title {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+header {
+    width: 100%;
+}
+
+.menu_ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #303030;
+  }
+  
+.menu_li {
+    float: left;
+  }
+  
+.menu_li_a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+    background-color: #111;
+  }
+
+#files {
+    list-style-type: none;
+}
+
+#playlist {
+    list-style-type: none;
+}
+
+.files_ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #636363;
+}
+
+.files_li {
+    float: left;
+}
+
+.files_p {
+  margin-left: 20px;
+}
+
+.files_a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.playlist_item_ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #636363;
+}
+
+.playlist_item_li {
+  float: left;
+}
+
+.playlist_item_p {
+margin-left: 20px;
+}
+
+.playlist_item_a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 30px;
+  text-decoration: none;
+}

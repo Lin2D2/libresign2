@@ -13,14 +13,19 @@
 # License.
 #
 
-import time, logging, os, sys, multiprocessing, subprocess , threading
-import json, queue, signal
-import ifcfg   # TODO pip3 install ifcfg
+import json
+import logging
+import multiprocessing
+import os
+import queue
+import sys
+import threading
+import time
 
-from libresign2.presentations.playlist import Playlist
-from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
+import ifcfg  # TODO pip3 install ifcfg
 import libresign2.infoscreen.infoscreen as infoscreen
-import libresign2.web_control_panel.web as web
+from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
+from libresign2.presentations.playlist import Playlist
 
 
 class LibresignInstance():
@@ -30,8 +35,7 @@ class LibresignInstance():
         self.write_settings("HomeDir", self.cwd)
         self.home_dir = self.cwd
         self.infoscreen_process = None
-        self.remote_sever = None
-        self.network_connection_bool = False
+        self.remote_sever_proc = None
         self.messages = queue.Queue()
         self.playlist = Playlist()
         self.ip_addr = self.get_ip_addr()
@@ -70,15 +74,23 @@ class LibresignInstance():
                                 i += 1
                             json.dump(data, json_file)
                             logging.debug(["successful wrote", value, "to", parameter])
+                            return
                     else:
-                        parameter = parameter[0]
-                        value = value[0]
+                        if len(parameter) != 0 and len(value) != 0:
+                            parameter = parameter[0]
+                            value = value[0]
+                        else:
+                            logging.warning(['write_settings didn\'t wrote', [parameter, type(parameter)], [value, type(value)]])
+                            json.dump(data, json_file)
+                            return
                 if type(parameter) == str:
                     data[parameter] = value
                     json.dump(data, json_file)
                     logging.debug(["successfully wrote", value, "to", parameter])
                 else:
                     logging.warning(['write_settings didn\'t wrote', [parameter, type(parameter)], [value, type(value)]])
+                    json.dump(data, json_file)
+                    return
             except:
                 logging.exception(["Unexpected error at writing settings:", sys.exc_info()[0], parameter, value])
 
@@ -88,31 +100,12 @@ class LibresignInstance():
     # TODO return True or False and logging.info()
     # TODO for now set to True
     def network_connection(self):
-        self.handle_web_request_loop = threading.Thread(target=self.handle_web_request, args=())
-        try:
-            self.network_connection_bool = True
-            self.handle_web_request_loop.start()
-            logging.info(["handle_web_request started"])
-            return True
-        except:
-            logging.warning(["handle_web_request not started"])
-            self.network_connection_bool = False
-            return False
+        return True
 
     def retry_network_connection(self):
         while not self.network_connection():
             logging.warning(["no network connection"])
             time.sleep(2)
-
-    def handle_web_request(self):
-        while self.network_connection_bool:
-            try:
-                msg = self.messages.get(True, 0.2)
-                logging.debug(["handel web request", msg])
-                self.playlist.handle_web_request(msg)
-                self.lo_setup_conn.handle_web_request(msg)
-            except queue.Empty:
-                pass
 
     def get_playlist (self):
         return self.playlist
@@ -141,38 +134,28 @@ class LibresignInstance():
 
         # start info screen
         url = "http://" + self.ip_addr + ":5000"
-        self.infoscreen_process = multiprocessing.Process(target=infoscreen.start_info_screen, args=(url,))
+        self.infoscreen_process = multiprocessing.Process(
+            target=infoscreen.start_info_screen,
+            args=(url,))
         try:
             self.infoscreen_process.start()
             logging.info(["Infoscreen started"])
         except:
             logging.warning(["Infoscreen not started"])
 
-        # start control panel
-        web.start(self, self.messages)
-
-
-        # TODO start LibreOffice Instance
+        # start LibreOffice Instance
         self.lo_setup_conn.start_LibreOffice()
         self.lo_setup_conn.setup_LibreOffice_connection()
 
-        # self.lo_setup_conn.open_document_LibreOffice(self.cwd + self.read_settings("SAVE_FOLDER") + '/Andras_Timar_LibOConf2011.odp')
-
-        # TODO start remote sever
-        self.remote_sever_proc = threading.Thread(target=self.lo_setup_conn.start_remote_sever, args=())
+        # start remote sever
+        self.remote_sever_proc = threading.Thread(
+            target=self.lo_setup_conn.start_remote_sever,
+            args=(self.ip_addr, "5000"))
         try:
             self.remote_sever_proc.start()
             logging.info(["remote_sever started"])
         except:
             logging.warning(["remote_sever not started"])
-
-        # TODO start remote http sever
-        cwd = os.getcwd()
-        os.chdir(cwd + '/impress-remote-js')
-        args = ['python3', '-m', 'http.server', str(self.read_settings("REMOTE_PORT"))]
-        subprocess.Popen(args)
-
-        os.chdir(cwd)
 
         # load presentations
 
