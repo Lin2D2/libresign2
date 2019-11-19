@@ -201,6 +201,7 @@ class LibresignInstance():
 def setup():
     args = sys.argv
     logging.info(["args =", args])
+    logging_level = 20
     settings_to_write_parameter = []
     settings_to_write_value = []
     for i in range(len(args)):
@@ -228,9 +229,13 @@ def setup():
             else:
                 logging.warning('libresign home', settings_to_write_value[-1])
 
+        if arg == "--debug":
+            logging_level = 10
+            # TODO chnage other stuff in debug mode
+
     libresign_instance = LibresignInstance()
-    logging_level = libresign_instance.read_settings('LOGGING_LEVEL')
     logging.root.setLevel(logging_level)
+    logging.debug(["logging level", logging_level])
     logging.info(['Libresign Instance created', 'sys.args=', args[1:]])
     # libresign_instance.write_settings("HomeDir", os.path.dirname(os.path.realpath(__file__)))
     # TODO write settings from above to settings.json
