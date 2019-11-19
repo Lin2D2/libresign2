@@ -101,7 +101,8 @@ def routes(app, parent):
 def run(parent, url, port):
     app = Flask(__name__)
     routes(app, parent)
-    app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
+    debug = parent.parent.settings_dict["DEBUG"]
+    app.run(debug=debug, host=url, port=port, threaded=True, use_reloader=False)
 #     app.run(debug=True, host=url, port=port, threaded=True, use_reloader=True)
 #
 #

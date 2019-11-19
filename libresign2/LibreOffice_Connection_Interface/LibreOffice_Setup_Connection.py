@@ -47,20 +47,21 @@ class LibreOffice_Setup_Connection():
         args = ["/usr/bin/soffice", '--nologo', '--norestore', '--nodefault', '--accept=pipe,name=libresign;urp']
         self.subprocess_libreoffice_pid = subprocess.Popen(args).pid
         # TODO somehow kill the proc after done
-        logging.info(['subprocess for LibreOffice: ', self.subprocess_libreoffice_pid])
+        logging.debug(['subprocess for LibreOffice: ', self.subprocess_libreoffice_pid])
 
     def setup_LibreOffice_connection(self):
         try:
             localContext = uno.getComponentContext()
-            logging.debug(['setingup LibreOffice', localContext])
+            logging.debug(['setting up LibreOffice', localContext])
             resolver = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
-            logging.debug(['setingup LibreOffice', resolver])
+            logging.debug(['setting up LibreOffice', resolver])
             ctx = resolver.resolve('uno:pipe,name=libresign;urp;StarOffice.ComponentContext')
-            logging.debug(['setingup LibreOffice', ctx])
+            logging.debug(['setting up LibreOffice', ctx])
             smgr = ctx.ServiceManager
-            logging.debug(['setingup LibreOffice', smgr])
+            logging.debug(['setting up LibreOffice', smgr])
             self.desktop = smgr.createInstanceWithContext("com.sun.star.frame.Desktop", ctx)
-            logging.info(['setingup LibreOffice', self.desktop])
+            logging.debug(['setting up LibreOffice', self.desktop])
+            logging.info('done setting up LibreOffice')
         except:   # TODO find the right exeption
             self.setup_LibreOffice_connection_number_of_tries += 1
             time.sleep(1)

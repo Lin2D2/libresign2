@@ -57,19 +57,19 @@ class LibresignInstance():
                         while i < len(parameter):
                             self.settings_dict[parameter[i]] = value[i]
                             i += 1
-                        logging.info(["changed", parameter, "to", value])
+                        logging.debug(["changed", parameter, "to", value])
                         return
                 else:
                     if len(parameter) != 0 and len(value) != 0:
                         self.settings_dict[parameter[0]] = value[0]
-                        logging.info(["changed", parameter[0], "to", value[0]])
+                        logging.debug(["changed", parameter[0], "to", value[0]])
                     else:
                         logging.warning(
                             ['write_settings didn\'t wrote', [parameter, type(parameter)], [value, type(value)]])
                         return
             if type(parameter) == str:
                 self.settings_dict[parameter] = value
-                logging.info(["changed", parameter, "to", value])
+                logging.debug(["changed", parameter, "to", value])
         except:
             logging.warning("failed to change settings!")
 
@@ -231,6 +231,8 @@ def setup():
 
         if arg == "--debug":
             logging_level = 10
+            settings_to_write_parameter.append("DEBUG")
+            settings_to_write_value.append(True)
             # TODO chnage other stuff in debug mode
 
     libresign_instance = LibresignInstance()
