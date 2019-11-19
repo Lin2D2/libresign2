@@ -22,7 +22,7 @@ import sys
 import threading
 import time
 
-import ifcfg  # TODO pip3 install ifcfg
+import ifcfg
 
 import libresign2.infoscreen.infoscreen as infoscreen
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection

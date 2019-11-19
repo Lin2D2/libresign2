@@ -4,7 +4,8 @@ import os
 
 from flask import Flask, render_template, redirect, request
 
-# TODO look here for how to create the app https://github.com/flaskbb/flaskbb/blob/master/flaskbb/app.py
+
+# Note for dev:look here for how to create the app https://github.com/flaskbb/flaskbb/blob/master/flaskbb/app.py
 
 
 def routes(app, parent):

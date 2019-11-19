@@ -17,10 +17,10 @@ import logging
 import subprocess
 import sys
 import time
-import os
+
+import uno
 
 import libresign2.web_control_panel.app as web_app
-import uno
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
 
 
@@ -48,7 +48,6 @@ class LibreOffice_Setup_Connection():
         self.subprocess_libreoffice_pid = subprocess.Popen(args).pid
         # TODO somehow kill the proc after done
         logging.info(['subprocess for LibreOffice: ', self.subprocess_libreoffice_pid])
-        # TODO sleep muss weg
 
     def setup_LibreOffice_connection(self):
         try:
