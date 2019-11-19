@@ -28,7 +28,7 @@ class LibreOffice_Setup_Connection():
     def __init__(self, parent=None):
         self.parent = parent
         self.p_cwd = self.parent.cwd
-        self.pre_file_dir = self.p_cwd + self.parent.read_settings("SAVE_FOLDER")
+        self.pre_file_dir = self.p_cwd + self.parent.settings_dict["SAVE_FOLDER"]
         self.subprocess_libreoffice_pid = None
         self.desktop = None
         self.docu = None
@@ -72,7 +72,7 @@ class LibreOffice_Setup_Connection():
                 sys.exit("quit because no connection to LibreOffice")
 
     def open_document_LibreOffice(self, file):
-        file_path_url = self.p_cwd + self.parent.read_settings("SAVE_FOLDER") + "/" + file
+        file_path_url = self.p_cwd + self.parent.settings_dict["SAVE_FOLDER"] + "/" + file
         self.docu = self.desktop.loadComponentFromURL("file://" + file_path_url, "MyFrame", 8, ())
         self.current_filename = file_path_url.split("/")[-1]
 

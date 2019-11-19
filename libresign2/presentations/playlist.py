@@ -20,6 +20,8 @@ import logging
 import os
 import sys
 
+#TODO full rewrite of this file... just for better implementing of settings and new playlist functions.
+
 cwd = os.getcwd()
 settings_path = cwd + "/libresign2/settings.json"
 
