@@ -165,15 +165,16 @@ class LibresignInstance():
         logging.info(['ip addresse:', self.ip_addr])
 
         # start info screen
-        url = "http://" + self.ip_addr + ":5000"
-        self.infoscreen_process = multiprocessing.Process(
-            target=infoscreen.start_info_screen,
-            args=(url,))
-        try:
-            self.infoscreen_process.start()
-            logging.info(["Infoscreen started"])
-        except:
-            logging.warning(["Infoscreen not started"])
+        if self.settings_dict["SHOW_INFO_SCREEN"] is True:
+            url = "http://" + self.ip_addr + ":5000"
+            self.infoscreen_process = multiprocessing.Process(
+                target=infoscreen.start_info_screen,
+                args=(url,))
+            try:
+                self.infoscreen_process.start()
+                logging.info(["Infoscreen started"])
+            except:
+                logging.warning(["Infoscreen not started"])
 
         # start LibreOffice Instance
         self.lo_setup_conn.start_LibreOffice()
