@@ -2,7 +2,7 @@
 import logging
 import os
 
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 
 # TODO look here for how to create the app https://github.com/flaskbb/flaskbb/blob/master/flaskbb/app.py
 
@@ -41,7 +41,7 @@ def routes(app, parent):
     #     return 'User %s' % escape("uploads")
 
     @app.route("/request/<action>/<data>")
-    def request(action, data):
+    def request_(action, data):
         logging.debug(action)
         logging.debug(data)
         if action == "add":
