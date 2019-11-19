@@ -19,4 +19,4 @@ export LD_LIBRARY_PATH=$libo
 export UNO_PATH=$libo
 export URE_BOOTSTRAP=$libo/fundamentalrc
 export FLASK_APP=app.py
-python3 -c "import main; main.setup()"
+python3 -c "import main; main.setup()" "$@"

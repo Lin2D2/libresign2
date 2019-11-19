@@ -23,6 +23,7 @@ import threading
 import time
 
 import ifcfg  # TODO pip3 install ifcfg
+
 import libresign2.infoscreen.infoscreen as infoscreen
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
 from libresign2.presentations.playlist import Playlist
@@ -167,10 +168,13 @@ class LibresignInstance():
 
 def setup():
     args = sys.argv
+    logging.info(["args =", args])
     settings_to_write_parameter = []
     settings_to_write_value = []
     for i in range(len(args)):
         arg = args[i]
+
+        #TODO reload standart settings
 
         # don't show the fullscreen info screen
         if arg == '--noinfo':
