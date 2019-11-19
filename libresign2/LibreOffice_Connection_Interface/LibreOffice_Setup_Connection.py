@@ -17,6 +17,7 @@ import logging
 import subprocess
 import sys
 import time
+import os
 
 import libresign2.web_control_panel.app as web_app
 import uno
@@ -27,6 +28,7 @@ class LibreOffice_Setup_Connection():
     def __init__(self, parent=None):
         self.parent = parent
         self.p_cwd = self.parent.cwd
+        self.pre_file_dir = self.p_cwd + self.parent.read_settings("SAVE_FOLDER")
         self.subprocess_libreoffice_pid = None
         self.desktop = None
         self.docu = None

@@ -22,14 +22,14 @@
 
                         <li class="playlist_item_li" style="float: right;">
                             <a class="playlist_button playlist_item_a" 
-                           href="{{ url_for('request', action='remove', data=item) }}">
+                           href="{{ url_for('request_', action='remove', data=item) }}">
                             Remove
                             </a>
                         </li>
                       
                         <li class="playlist_item_li" style="float: right;">
                           <a class="playlist_button playlist_item_a" 
-                         href="{{ url_for('request', action='play', data=item) }}">
+                         href="{{ url_for('request_', action='play', data=item) }}">
                           Play
                           </a>
                         </li>
@@ -50,8 +50,8 @@
                     <li class="playlist_item" id="{{item}}">
                       <ul class="files_ul">
                         <li class="files_li"><p class="playlist_title files_p">{{item}}</p></li>
-                        <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="{{ url_for('request', action='download', data=item) }}" download>Download</a></li>
-                        <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="{{ url_for('request', action='add', data=item) }}">Add to playlist</a></li>
+                        <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="{{ url_for('request_', action='download', data=item) }}" download>Download</a></li>
+                        <li class="files_li" style="float: right;"><a class="playlist_button files_a" href="{{ url_for('request_', action='add', data=item) }}">Add to playlist</a></li>
                       </ul>
                     </li>
                 {% endfor %}
