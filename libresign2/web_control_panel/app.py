@@ -1,6 +1,7 @@
 
 import logging
 import os
+import re
 
 from flask import Flask, render_template, redirect, request
 
@@ -32,8 +33,11 @@ def routes(app, parent):
     def handleFileUpload():
         if 'file' in request.files:
             file = request.files['file']
-            if file.filename != '':
-                file.save(os.path.join(parent.pre_file_dir, file.filename))
+            if file.filename != '' and valid_file(file):
+                try:
+                    file.save(os.path.join(parent.pre_file_dir, file.filename))
+                except:
+                    logging.warning("File upload FAILED")
         return redirect("/")
 
     # @app.route('/get_uploads/<uploads>', methods=['GET'])
@@ -90,6 +94,22 @@ def routes(app, parent):
     @app.route("/impress_remote/refresh")
     def refresh():
         pass
+
+    def valid_file(file):
+        uploaded_files = os.listdir(parent.pre_file_dir)
+
+        def allowed_format(file):
+            allowed_formats = ["odp", "pptx", "ppt"]
+            if re.split("\.", file)[-1] in allowed_formats:
+                return True
+            else:
+                return False
+
+        if allowed_format(file.filename) and file not in uploaded_files:
+            return True
+        else:
+            logging.warning(["failed validation", file, file.name, uploaded_files])
+            return False
 
     def playlist_add(data):
         parent.parent.playlist.queue_file(data)

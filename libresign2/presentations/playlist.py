@@ -19,6 +19,7 @@ import json
 import logging
 import os
 import sys
+import re
 
 #TODO full rewrite of this file... just for better implementing of settings and new playlist functions.
 
@@ -54,6 +55,14 @@ class Playlist():
         # current file index
         self.current    = 0
 
+    @staticmethod
+    def allowed_format(file):
+        allowed_formats = ["odp", "pptx", "ppt"]
+        if re.split("\.", file)[-1] in allowed_formats:
+            return True
+        else:
+            return False
+
     # load previously-uploaded presentations
     def load_files (self):
         path = read_settings("SAVE_FOLDER")
@@ -69,15 +78,17 @@ class Playlist():
 
     def load_playlist (self):
         path = read_settings("PLAYLIST")
-        fd = open(cwd + path, "r")
-
-        for line in fd:
-            # TODO clean up !!!
+        with open(cwd + path, "r") as playlist_file:
             del self.playlist
             self.playlist = []
-            self.playlist.append(line)
 
-        fd.close()
+            for line in playlist_file:
+                if self.allowed_format(line):
+                    self.playlist.append(line)
+                else:
+                    # TODO warn the user if an file type is not supported
+                    pass
+
         print("loaded playlist", self.playlist)
         return self.playlist
 
