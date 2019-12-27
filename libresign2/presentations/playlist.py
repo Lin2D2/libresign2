@@ -68,11 +68,13 @@ class Playlist():
         path = read_settings("SAVE_FOLDER")
         self.all_files = []
         logging.debug(["path to Save folder", cwd + path])
-        for f in os.listdir(cwd + path):
+        for pre_file in os.listdir(cwd + path):
             logging.debug(["path list dir", os.listdir(cwd + path)])
-            if os.path.isfile(os.path.join(cwd + path, f)):
-                item = {"file" : f}
-                self.all_files.append(f)
+            if os.path.isfile(os.path.join(cwd + path, pre_file)):
+                if self.allowed_format(pre_file):
+                    self.all_files.append(pre_file)
+                else:
+                    logging.warning([pre_file, "is not an allowed format"])
 
         print("loaded presentation files", self.all_files)
 
