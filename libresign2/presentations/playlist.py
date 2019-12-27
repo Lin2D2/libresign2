@@ -77,6 +77,7 @@ class Playlist():
                     logging.warning([pre_file, "is not an allowed format"])
 
         print("loaded presentation files", self.all_files)
+        return self.all_files
 
     def load_playlist (self):
         path = read_settings("PLAYLIST")

@@ -13,7 +13,7 @@ def routes(app, parent):
     @app.route("/")
     def home():
         return render_template("control_panel.html",
-                               files=os.listdir(parent.pre_file_dir),
+                               files=parent.parent.playlist.load_files(),
                                playlist_items=parent.parent.playlist.load_playlist()
                                )
 

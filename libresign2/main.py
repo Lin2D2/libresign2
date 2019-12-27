@@ -181,6 +181,8 @@ class LibresignInstance():
         self.lo_setup_conn.setup_LibreOffice_connection()
 
         # start remote sever
+        self.playlist.load_files()
+        self.playlist.load_playlist()
         self.remote_sever_proc = threading.Thread(
             target=self.lo_setup_conn.start_remote_sever,
             args=(self.ip_addr, "5000"))
@@ -189,11 +191,6 @@ class LibresignInstance():
             logging.info(["remote_sever started"])
         except:
             logging.warning(["remote_sever not started"])
-
-        # load presentations
-
-        self.playlist.load_files()
-        self.playlist.load_playlist()
 
         # TODO add an option to quit to Program
 
