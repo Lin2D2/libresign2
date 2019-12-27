@@ -22,7 +22,8 @@ import sys
 import threading
 import time
 
-import ifcfg  # TODO pip3 install ifcfg
+import ifcfg
+
 import libresign2.infoscreen.infoscreen as infoscreen
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_Setup_Connection import LibreOffice_Setup_Connection
 from libresign2.presentations.playlist import Playlist
@@ -33,13 +34,44 @@ class LibresignInstance():
         self.cwd = os.getcwd()
         self.settings_path = self.cwd + "/libresign2/settings.json"
         self.write_settings("HomeDir", self.cwd)
+        self.change_settings("HomeDir", self.cwd)
         self.home_dir = self.cwd
+        self.settings_dict = self.load_settings()
         self.infoscreen_process = None
         self.remote_sever_proc = None
         self.messages = queue.Queue()
         self.playlist = Playlist()
         self.ip_addr = self.get_ip_addr()
         self.lo_setup_conn = LibreOffice_Setup_Connection(parent=self)
+
+    def load_settings(self):
+        with open(self.settings_path, "r") as json_file:
+            return json.load(json_file)
+
+    def change_settings(self, parameter, value):
+        try:
+            if type(parameter) == list and type(value) == list:
+                if len(parameter) >= 1 and len(value) >= 1:
+                    if len(parameter) == len(value):
+                        i = 0
+                        while i < len(parameter):
+                            self.settings_dict[parameter[i]] = value[i]
+                            i += 1
+                        logging.debug(["changed", parameter, "to", value])
+                        return
+                else:
+                    if len(parameter) != 0 and len(value) != 0:
+                        self.settings_dict[parameter[0]] = value[0]
+                        logging.debug(["changed", parameter[0], "to", value[0]])
+                    else:
+                        logging.warning(
+                            ['write_settings didn\'t wrote', [parameter, type(parameter)], [value, type(value)]])
+                        return
+            if type(parameter) == str:
+                self.settings_dict[parameter] = value
+                logging.debug(["changed", parameter, "to", value])
+        except:
+            logging.warning("failed to change settings!")
 
     def read_settings(self, parameter):
         with open(self.settings_path, "r") as json_file:
@@ -113,7 +145,7 @@ class LibresignInstance():
     def load_presentation(self, file):
         try:
             self.lo_setup_conn.open_document_LibreOffice(
-                self.cwd + self.read_settings("SAVE_FOLDER") + "/" + file)
+                self.cwd + self.settings_dict["SAVE_FOLDER"] + "/" + file)
             return True
         except:
             logging.warning("failed to load presentation")
@@ -133,21 +165,24 @@ class LibresignInstance():
         logging.info(['ip addresse:', self.ip_addr])
 
         # start info screen
-        url = "http://" + self.ip_addr + ":5000"
-        self.infoscreen_process = multiprocessing.Process(
-            target=infoscreen.start_info_screen,
-            args=(url,))
-        try:
-            self.infoscreen_process.start()
-            logging.info(["Infoscreen started"])
-        except:
-            logging.warning(["Infoscreen not started"])
+        if self.settings_dict["SHOW_INFO_SCREEN"] is True:
+            url = "http://" + self.ip_addr + ":5000"
+            self.infoscreen_process = multiprocessing.Process(
+                target=infoscreen.start_info_screen,
+                args=(url,))
+            try:
+                self.infoscreen_process.start()
+                logging.info(["Infoscreen started"])
+            except:
+                logging.warning(["Infoscreen not started"])
 
         # start LibreOffice Instance
         self.lo_setup_conn.start_LibreOffice()
         self.lo_setup_conn.setup_LibreOffice_connection()
 
         # start remote sever
+        self.playlist.load_files()
+        self.playlist.load_playlist()
         self.remote_sever_proc = threading.Thread(
             target=self.lo_setup_conn.start_remote_sever,
             args=(self.ip_addr, "5000"))
@@ -157,20 +192,19 @@ class LibresignInstance():
         except:
             logging.warning(["remote_sever not started"])
 
-        # load presentations
-
-        self.playlist.load_files()
-        self.playlist.load_playlist()
-
         # TODO add an option to quit to Program
 
 
 def setup():
     args = sys.argv
+    logging.info(["args =", args])
+    logging_level = 20
     settings_to_write_parameter = []
     settings_to_write_value = []
     for i in range(len(args)):
         arg = args[i]
+
+        #TODO reload standart settings
 
         # don't show the fullscreen info screen
         if arg == '--noinfo':
@@ -192,13 +226,19 @@ def setup():
             else:
                 logging.warning('libresign home', settings_to_write_value[-1])
 
+        if arg == "--debug":
+            logging_level = 10
+            settings_to_write_parameter.append("DEBUG")
+            settings_to_write_value.append(True)
+            # TODO chnage other stuff in debug mode
+
     libresign_instance = LibresignInstance()
-    logging_level = libresign_instance.read_settings('LOGGING_LEVEL')
     logging.root.setLevel(logging_level)
+    logging.debug(["logging level", logging_level])
     logging.info(['Libresign Instance created', 'sys.args=', args[1:]])
-    libresign_instance.write_settings("HomeDir", os.path.dirname(os.path.realpath(__file__)))
+    # libresign_instance.write_settings("HomeDir", os.path.dirname(os.path.realpath(__file__)))
     # TODO write settings from above to settings.json
-    libresign_instance.write_settings(settings_to_write_parameter, settings_to_write_value)
+    libresign_instance.change_settings(settings_to_write_parameter, settings_to_write_value)
     del settings_to_write_parameter, settings_to_write_value
     logging.info(["Setup completed", libresign_instance])
     libresign_instance.run()

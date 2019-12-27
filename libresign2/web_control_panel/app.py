@@ -1,17 +1,19 @@
 
 import logging
 import os
+import re
 
 from flask import Flask, render_template, redirect, request
 
-# TODO look here for how to create the app https://github.com/flaskbb/flaskbb/blob/master/flaskbb/app.py
+
+# Note for dev:look here for how to create the app https://github.com/flaskbb/flaskbb/blob/master/flaskbb/app.py
 
 
 def routes(app, parent):
     @app.route("/")
     def home():
         return render_template("control_panel.html",
-                               files=os.listdir(parent.pre_file_dir),
+                               files=parent.parent.playlist.load_files(),
                                playlist_items=parent.parent.playlist.load_playlist()
                                )
 
@@ -31,8 +33,11 @@ def routes(app, parent):
     def handleFileUpload():
         if 'file' in request.files:
             file = request.files['file']
-            if file.filename != '':
-                file.save(os.path.join(parent.pre_file_dir, file.filename))
+            if file.filename != '' and valid_file(file):
+                try:
+                    file.save(os.path.join(parent.pre_file_dir, file.filename))
+                except:
+                    logging.warning("File upload FAILED")
         return redirect("/")
 
     # @app.route('/get_uploads/<uploads>', methods=['GET'])
@@ -90,6 +95,22 @@ def routes(app, parent):
     def refresh():
         pass
 
+    def valid_file(file):
+        uploaded_files = os.listdir(parent.pre_file_dir)
+
+        def allowed_format(file):
+            allowed_formats = ["odp", "pptx", "ppt"]
+            if re.split("\.", file)[-1] in allowed_formats:
+                return True
+            else:
+                return False
+
+        if allowed_format(file.filename) and file not in uploaded_files:
+            return True
+        else:
+            logging.warning(["failed validation", file, file.name, uploaded_files])
+            return False
+
     def playlist_add(data):
         parent.parent.playlist.queue_file(data)
 
@@ -100,7 +121,8 @@ def routes(app, parent):
 def run(parent, url, port):
     app = Flask(__name__)
     routes(app, parent)
-    app.run(debug=True, host=url, port=port, threaded=True, use_reloader=False)
+    debug = parent.parent.settings_dict["DEBUG"]
+    app.run(debug=debug, host=url, port=port, threaded=True, use_reloader=False)
 #     app.run(debug=True, host=url, port=port, threaded=True, use_reloader=True)
 #
 #

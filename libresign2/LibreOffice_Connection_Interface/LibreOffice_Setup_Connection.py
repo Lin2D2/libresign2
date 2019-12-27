@@ -17,10 +17,10 @@ import logging
 import subprocess
 import sys
 import time
-import os
+
+import uno
 
 import libresign2.web_control_panel.app as web_app
-import uno
 from libresign2.LibreOffice_Connection_Interface.LibreOffice_SlideShow_Controlls import LibreOffice_SlideShow_Controlls
 
 
@@ -28,7 +28,7 @@ class LibreOffice_Setup_Connection():
     def __init__(self, parent=None):
         self.parent = parent
         self.p_cwd = self.parent.cwd
-        self.pre_file_dir = self.p_cwd + self.parent.read_settings("SAVE_FOLDER")
+        self.pre_file_dir = self.p_cwd + self.parent.settings_dict["SAVE_FOLDER"]
         self.subprocess_libreoffice_pid = None
         self.desktop = None
         self.docu = None
@@ -47,21 +47,21 @@ class LibreOffice_Setup_Connection():
         args = ["/usr/bin/soffice", '--nologo', '--norestore', '--nodefault', '--accept=pipe,name=libresign;urp']
         self.subprocess_libreoffice_pid = subprocess.Popen(args).pid
         # TODO somehow kill the proc after done
-        logging.info(['subprocess for LibreOffice: ', self.subprocess_libreoffice_pid])
-        # TODO sleep muss weg
+        logging.debug(['subprocess for LibreOffice: ', self.subprocess_libreoffice_pid])
 
     def setup_LibreOffice_connection(self):
         try:
             localContext = uno.getComponentContext()
-            logging.debug(['setingup LibreOffice', localContext])
+            logging.debug(['setting up LibreOffice', localContext])
             resolver = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
-            logging.debug(['setingup LibreOffice', resolver])
+            logging.debug(['setting up LibreOffice', resolver])
             ctx = resolver.resolve('uno:pipe,name=libresign;urp;StarOffice.ComponentContext')
-            logging.debug(['setingup LibreOffice', ctx])
+            logging.debug(['setting up LibreOffice', ctx])
             smgr = ctx.ServiceManager
-            logging.debug(['setingup LibreOffice', smgr])
+            logging.debug(['setting up LibreOffice', smgr])
             self.desktop = smgr.createInstanceWithContext("com.sun.star.frame.Desktop", ctx)
-            logging.info(['setingup LibreOffice', self.desktop])
+            logging.debug(['setting up LibreOffice', self.desktop])
+            logging.info('done setting up LibreOffice')
         except:   # TODO find the right exeption
             self.setup_LibreOffice_connection_number_of_tries += 1
             time.sleep(1)
@@ -73,7 +73,7 @@ class LibreOffice_Setup_Connection():
                 sys.exit("quit because no connection to LibreOffice")
 
     def open_document_LibreOffice(self, file):
-        file_path_url = self.p_cwd + self.parent.read_settings("SAVE_FOLDER") + "/" + file
+        file_path_url = self.p_cwd + self.parent.settings_dict["SAVE_FOLDER"] + "/" + file
         self.docu = self.desktop.loadComponentFromURL("file://" + file_path_url, "MyFrame", 8, ())
         self.current_filename = file_path_url.split("/")[-1]
 
@@ -96,7 +96,8 @@ class LibreOffice_Setup_Connection():
         except:
             logging.warning("failed logging self.docu and/or self.docu.Presentation")
         logging.debug(self.parent.infoscreen_process)
-        self.parent.infoscreen_process.terminate()
+        if self.parent.infoscreen_process:
+            self.parent.infoscreen_process.terminate()
 
         # self.docu.Presentation.IsAlwaysOnTop = True
         # self.docu.Presentation.IsEndless = False
