@@ -128,7 +128,11 @@ class LibresignInstance():
                 logging.exception(["Unexpected error at writing settings:", sys.exc_info()[0], parameter, value])
 
     def get_ip_addr(self):
-        return ifcfg.default_interface()["inet"]
+        try:
+            return ifcfg.default_interface()["inet"]
+        except:
+            logging.warning("no Internet or no Ip-Adresse found")
+            return "0.0.0.0"
 
     # TODO return True or False and logging.info()
     # TODO for now set to True
