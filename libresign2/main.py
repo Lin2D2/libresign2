@@ -20,6 +20,7 @@ import os
 import queue
 import sys
 import threading
+import datetime
 import time
 
 import ifcfg
@@ -127,7 +128,11 @@ class LibresignInstance():
                 logging.exception(["Unexpected error at writing settings:", sys.exc_info()[0], parameter, value])
 
     def get_ip_addr(self):
-        return ifcfg.default_interface()["inet"]
+        try:
+            return ifcfg.default_interface()["inet"]
+        except:
+            logging.warning("no Internet or no Ip-Adresse found")
+            return "0.0.0.0"
 
     # TODO return True or False and logging.info()
     # TODO for now set to True
@@ -156,8 +161,13 @@ class LibresignInstance():
             os.mkdir(self.cwd + "/libresign2/presentations/pre_file")
         except FileExistsError:
             pass
-        with open(self.cwd + "/libresign2/presentations/playlist", "w+"):
-            pass
+        try:
+            with open(self.cwd + "/libresign2/presentations/playlist", "r"):
+                pass
+        except:
+            with open(self.cwd + "/libresign2/presentations/playlist", "w+") as file:
+                file.write(str(datetime.datetime.now()))
+                file.write("\n")
 
         if not self.network_connection():
             self.retry_network_connection()

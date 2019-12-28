@@ -13,8 +13,8 @@ def routes(app, parent):
     @app.route("/")
     def home():
         return render_template("control_panel.html",
-                               files=parent.parent.playlist.load_files(),
-                               playlist_items=parent.parent.playlist.load_playlist()
+                               files=parent.parent.playlist.uploaded_presentations,
+                               playlist_items=parent.parent.playlist.playlist
                                )
 
     @app.route("/impress_remote")
