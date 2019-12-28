@@ -20,6 +20,7 @@ import os
 import queue
 import sys
 import threading
+import datetime
 import time
 
 import ifcfg
@@ -156,8 +157,13 @@ class LibresignInstance():
             os.mkdir(self.cwd + "/libresign2/presentations/pre_file")
         except FileExistsError:
             pass
-        with open(self.cwd + "/libresign2/presentations/playlist", "w+"):
-            pass
+        try:
+            with open(self.cwd + "/libresign2/presentations/playlist", "r"):
+                pass
+        except:
+            with open(self.cwd + "/libresign2/presentations/playlist", "w+") as file:
+                file.write(str(datetime.datetime.now()))
+                file.write("\n")
 
         if not self.network_connection():
             self.retry_network_connection()

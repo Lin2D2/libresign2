@@ -20,6 +20,7 @@ import logging
 import os
 import sys
 import re
+import datetime
 
 #TODO full rewrite of this file... just for better implementing of settings and new playlist functions.
 
@@ -49,7 +50,7 @@ def read_settings(parameter):
 class Playlist():
     def __init__ (self):
         # all files that have been uploaded
-        self.all_files  = []
+        self.uploaded_presentations  = []
         # files that are being played
         self.playlist   = []
         # current file index
@@ -58,34 +59,36 @@ class Playlist():
     @staticmethod
     def allowed_format(file):
         allowed_formats = ["odp", "pptx", "ppt"]
+        file = re.split("\n", file)[0]
         if re.split("\.", file)[-1] in allowed_formats:
             return True
         else:
-            return False
+                return False
 
     # load previously-uploaded presentations
     def load_files (self):
         path = read_settings("SAVE_FOLDER")
-        self.all_files = []
+        self.uploaded_presentations = []
         logging.debug(["path to Save folder", cwd + path])
         for pre_file in os.listdir(cwd + path):
             logging.debug(["path list dir", os.listdir(cwd + path)])
             if os.path.isfile(os.path.join(cwd + path, pre_file)):
                 if self.allowed_format(pre_file):
-                    self.all_files.append(pre_file)
+                    self.uploaded_presentations.append(pre_file)
                 else:
                     logging.warning([pre_file, "is not an allowed format"])
 
-        print("loaded presentation files", self.all_files)
-        return self.all_files
+        print("loaded presentation files", self.uploaded_presentations)
+        return self.uploaded_presentations
 
     def load_playlist (self):
         path = read_settings("PLAYLIST")
         with open(cwd + path, "r") as playlist_file:
             del self.playlist
             self.playlist = []
-
-            for line in playlist_file:
+            lines = playlist_file.readlines()
+            logging.warning(lines)
+            for line in lines:
                 if self.allowed_format(line):
                     self.playlist.append(line)
                 else:
@@ -95,40 +98,37 @@ class Playlist():
         print("loaded playlist", self.playlist)
         return self.playlist
 
-    # add file to playlist
     def queue_file(self, filename):
-        logging.debug("queue_file run")
-        for item in self.playlist:
-            if item == filename:
-                return
         path = read_settings("PLAYLIST")
-        logging.debug(path)
-        with open(cwd + path, "r") as file:
-            logging.debug("queue_file check if alredy in playlist")
-            for line in file:
-                if line == filename:
-                    return
-        logging.debug("queue_file adding to playlist")
-        self.playlist.append(filename)
-        with open(cwd + path, "a") as file:
-            file.write(filename)
-            logging.debug("queue_file added to playlist")
-            return
+        if filename not in self.playlist:
+            self.playlist.append(filename)
+        with open(cwd + path , "r") as file:
+            r_file = file.readlines()
+        if filename not in r_file:
+            with open(cwd + path, "w") as file:
+                file_content = []
+                file_content.append(str(datetime.datetime.now()))
+                file_content.append("\n")
+                for e in self.playlist:
+                    file_content.append("\n" + e)
+                file.writelines(file_content)
+        return self.playlist
 
     # remove file from playlist
-    def dequeue (self, filename):
-        for item in self.playlist:
-            if item == filename:
-                del self.playlist[self.playlist.index(item)]
+    def dequeue(self, filename):
         path = read_settings("PLAYLIST")
-        logging.debug(path)
-        # TODO clean up !!!
-        with open(cwd + path, "w") as file:
-            logging.debug("queue_file check if alredy in playlist")
-            if len(self.playlist) == 0:
-                file.write("")
-            for e in self.playlist:
-                file.write(e + "\n")
+        if filename in self.playlist:
+            del self.playlist[self.playlist.index(filename)]
+        with open(cwd + path, "r") as file:
+            r_file = file.readlines()
+            _file = []
+            for e in r_file:
+                _file.append(re.split("\n", e)[0])
+        if filename in _file:
+            del r_file[_file.index(filename)]
+            with open(cwd + path, "w") as file:
+                file.writelines(r_file)
+        return self.playlist
 
     # select file to be played right now
     def select_file (self, filename):
