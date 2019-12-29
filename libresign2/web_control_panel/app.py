@@ -2,6 +2,7 @@
 import logging
 import os
 import re
+import threading
 
 from flask import Flask, render_template, redirect, request
 
@@ -57,6 +58,7 @@ def routes(app, parent):
             parent.open_document_LibreOffice(data)
         if action == "remove":
             playlist_remove(data)
+            threading.Thread(target=close_active_file).start()
         return redirect("/")
 
     @app.route("/impress_remote/close")
@@ -76,19 +78,31 @@ def routes(app, parent):
     @app.route("/impress_remote/reverse_reverse")
     def reverse_reverse():
         parent.lo_slideshow_contr.go_to_previous_Slide()
+        threading.Thread(target=parent.is_presentation_ending("-")).start()
         return redirect("/impress_remote")
 
     @app.route("/impress_remote/reverse")
     def reverse():
-        pass
+        parent.lo_slideshow_contr.go_to_previous_effect()
+        threading.Thread(target=parent.is_presentation_ending("-")).start()
+        return redirect("/impress_remote")
 
     @app.route("/impress_remote/forward")
     def forward():
-        pass
+        if not parent.is_presentation_ending_var:
+            parent.lo_slideshow_contr.go_to_next_effect()
+        else:
+            pass
+        threading.Thread(target=parent.is_presentation_ending("+")).start()
+        return redirect("/impress_remote")
 
     @app.route("/impress_remote/forward_forward")
     def forward_forward():
-        parent.lo_slideshow_contr.go_to_next_Slide()
+        if not parent.is_presentation_ending_var:
+            parent.lo_slideshow_contr.go_to_next_Slide()
+        else:
+            pass
+        threading.Thread(target=parent.is_presentation_ending("+")).start()
         return redirect("/impress_remote")
 
     @app.route("/impress_remote/refresh")
