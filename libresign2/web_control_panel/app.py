@@ -75,6 +75,11 @@ def routes(app, parent):
         parent.start_presentation()
         return redirect("/impress_remote")
 
+    @app.route("/impress_remote/pause")
+    def pause():  # TODO use this in the Code
+        parent.blankScreen()
+        return redirect("/impress_remote")
+
     @app.route("/impress_remote/reverse_reverse")
     def reverse_reverse():
         parent.lo_slideshow_contr.go_to_previous_Slide()
@@ -130,6 +135,10 @@ def routes(app, parent):
 
     def playlist_remove(data):
         parent.parent.playlist.dequeue(data)
+
+    def close_active_file():
+        parent.end_curent_presentation()
+        parent.close_file()
 
 
 def run(parent, url, port):
