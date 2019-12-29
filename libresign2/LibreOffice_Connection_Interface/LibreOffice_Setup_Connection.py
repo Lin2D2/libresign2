@@ -97,7 +97,8 @@ class LibreOffice_Setup_Connection():
             logging.warning("failed logging self.docu and/or self.docu.Presentation")
         logging.debug(self.parent.infoscreen_process)
         if self.parent.infoscreen_process:
-            self.parent.infoscreen_process.terminate()
+            # self.parent.infoscreen_process.terminate()
+            self.parent.infoscreen.end_window()
 
         # self.docu.Presentation.IsAlwaysOnTop = True
         # self.docu.Presentation.IsEndless = False

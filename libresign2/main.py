@@ -38,6 +38,7 @@ class LibresignInstance():
         self.change_settings("HomeDir", self.cwd)
         self.home_dir = self.cwd
         self.settings_dict = self.load_settings()
+        self.infoscreen = infoscreen
         self.infoscreen_process = None
         self.remote_sever_proc = None
         self.messages = queue.Queue()
@@ -177,8 +178,8 @@ class LibresignInstance():
         # start info screen
         if self.settings_dict["SHOW_INFO_SCREEN"] is True:
             url = "http://" + self.ip_addr + ":5000"
-            self.infoscreen_process = multiprocessing.Process(
-                target=infoscreen.start_info_screen,
+            self.infoscreen_process = threading.Thread(
+                target=self.infoscreen.start_info_screen,
                 args=(url,))
             try:
                 self.infoscreen_process.start()

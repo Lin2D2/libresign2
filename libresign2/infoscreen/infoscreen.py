@@ -23,14 +23,18 @@ bg_color = "#55A555"
 
 
 class InfoScreen(tk.Frame):
-    def __init__(self, master=None, url=None):
+    def __init__(self, master=None, url=None, root=None):
         tk.Frame.__init__(self, master)
         self.master = master
+        self.root = root
         self.state = False
         self.master.bind("<Escape>", self.end_fullscreen)
         self.pack(fill=tk.BOTH, expand=1)
         self.url = url
         self.setup()
+
+    def end_window(self):
+        self.root.destroy()
 
         # TODO add listener here for event in unoremote
     def toggle_fullscreen(self, event=None, state=None, mode=0):
@@ -120,6 +124,6 @@ def start_info_screen(url):
     root.attributes('-fullscreen', True)
     root.attributes('-topmost', True)
 
-    app = InfoScreen(master=root, url=url)
+    app = InfoScreen(master=root, url=url, root=root)
     app.configure(background=bg_color)
     root.mainloop()
