@@ -21,6 +21,7 @@ import os
 import sys
 import re
 import datetime
+import threading
 
 #TODO full rewrite of this file... just for better implementing of settings and new playlist functions.
 
@@ -63,7 +64,7 @@ class Playlist():
         if re.split("\.", file)[-1] in allowed_formats:
             return True
         else:
-                return False
+            return False
 
     # load previously-uploaded presentations
     def load_files (self):
@@ -102,16 +103,19 @@ class Playlist():
         path = read_settings("PLAYLIST")
         if filename not in self.playlist:
             self.playlist.append(filename)
-        with open(cwd + path , "r") as file:
-            r_file = file.readlines()
-        if filename not in r_file:
-            with open(cwd + path, "w") as file:
-                file_content = []
-                file_content.append(str(datetime.datetime.now()))
-                file_content.append("\n")
-                for e in self.playlist:
-                    file_content.append("\n" + e)
-                file.writelines(file_content)
+
+        def queue_file_write():
+            with open(cwd + path , "r") as file:
+                r_file = file.readlines()
+            if filename not in r_file:
+                with open(cwd + path, "w") as file:
+                    file_content = []
+                    file_content.append(str(datetime.datetime.now()))
+                    file_content.append("\n")
+                    for e in self.playlist:
+                        file_content.append("\n" + e)
+                    file.writelines(file_content)
+        threading.Thread(target=queue_file_write).start()
         return self.playlist
 
     # remove file from playlist
@@ -119,15 +123,18 @@ class Playlist():
         path = read_settings("PLAYLIST")
         if filename in self.playlist:
             del self.playlist[self.playlist.index(filename)]
-        with open(cwd + path, "r") as file:
-            r_file = file.readlines()
-            _file = []
-            for e in r_file:
-                _file.append(re.split("\n", e)[0])
-        if filename in _file:
-            del r_file[_file.index(filename)]
-            with open(cwd + path, "w") as file:
-                file.writelines(r_file)
+
+        def dequeue_write():
+            with open(cwd + path, "r") as file:
+                r_file = file.readlines()
+                _file = []
+                for e in r_file:
+                    _file.append(re.split("\n", e)[0])
+            if filename in _file:
+                del r_file[_file.index(filename)]
+                with open(cwd + path, "w") as file:
+                    file.writelines(r_file)
+        threading.Thread(target=dequeue_write).start()
         return self.playlist
 
     # select file to be played right now
